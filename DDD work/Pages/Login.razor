@@ -1,57 +1,58 @@
 ﻿@page "/login"
 @using DDD_work.Services
 @using DDD_work.Services.Auth 
-@inject UserDataService UserDataService
+@inject UserDataService UserDataService 
 @inject NavigationManager NavigationManager
 @inject UserService UserService 
 
 <h1>Sign In</h1>
 
-@if (!string.IsNullOrEmpty(ErrorMessage))
+@if (!string.IsNullOrEmpty(ErrorMessage)) // if there's an error message to show
 {
     <div class="alert alert-danger" role="alert">
+        // show the error
         @ErrorMessage
     </div>
 }
 
 <div class="mb-3">
     <label for="username" class="form-label">Username</label>
-    <input type="text" class="form-control" id="username" @bind="Username">
+    <input type="text" class="form-control" id="username" @bind="Username"> 
 </div>
 
 <div class="mb-3">
     <label for="password" class="form-label">Password</label>
-    <input type="password" class="form-control" id="password" @bind="Password">
+    <input type="password" class="form-control" id="password" @bind="Password"> 
 </div>
 
-<button type="button" class="btn btn-primary" @onclick="HandleLogin">Continue</button>
+<button type="button" class="btn btn-primary" @onclick="HandleLogin">Continue</button> 
 
 @code {
-    private string Username { get; set; }
-    private string Password { get; set; }
-    private string ErrorMessage { get; set; }
+    private string Username { get; set; } // holds the username from the input
+    private string Password { get; set; } // holds the password from the input
+    private string ErrorMessage { get; set; } // to show any error messages
 
-    private async Task HandleLogin()
+    private async Task HandleLogin() // this is what happens when you click the login button
     {
-        ErrorMessage = string.Empty;
+        ErrorMessage = string.Empty; // clear any old error messages
 
-        if (string.IsNullOrWhiteSpace(Username) || string.IsNullOrWhiteSpace(Password))
+        if (string.IsNullOrWhiteSpace(Username) || string.IsNullOrWhiteSpace(Password)) // if either field is empty
         {
-            ErrorMessage = "Please enter both username and password.";
-            return;
+            ErrorMessage = "Please enter both username and password."; // tell the user to fill them in
+            return; // stop here
         }
 
-        var authenticatedUser = await UserDataService.AuthenticateUserAsync(Username, Password);
+        var authenticatedUser = await UserDataService.AuthenticateUserAsync(Username, Password); // try to log in
 
-        if (authenticatedUser != null)
+        if (authenticatedUser != null) // if we got a user back, it means the login was successful
         {
-            
-            UserService.SetCurrentUser(authenticatedUser);
-            NavigationManager.NavigateTo("/feed");
+
+            UserService.SetCurrentUser(authenticatedUser); // set the current user in our service
+            NavigationManager.NavigateTo("/feed"); // go to the feed page
         }
-        else
+        else // if the login failed
         {
-            ErrorMessage = "Incorrect username/password. Please try again.";
+            ErrorMessage = "Incorrect username/password. Please try again."; // show an error message
         }
     }
 }

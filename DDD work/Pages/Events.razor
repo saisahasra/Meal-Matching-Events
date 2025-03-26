@@ -1,47 +1,223 @@
 ﻿@page "/events"
-@using DDD_work.Data
-@inject WeatherForecastService ForecastService
-
-<PageTitle>Events</PageTitle>
+@using DDD_work.Models
+@using DDD_work.Services
+@using DDD_work.Services.Auth
+@using DDD_work.Services.Match
+@inject EventService EventService
+@inject UserDataService UserDataService
+@inject UserService UserService
+@inject NavigationManager NavigationManager
+@inject MatchService MatchService
 
 <h1>Events</h1>
 
-<p>This is where we'll show some cool events.</p>
-
-@if (forecasts == null)
+@if (events == null)
 {
-    <p><em>Loading...</em></p>
+    <p><em>Loading events...</em></p>
+}
+else if (events.Count == 0)
+{
+    <p>No events available at the moment.</p>
 }
 else
 {
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Date</th>
-                <th>Event Title</th>
-                <th>Location</th>
-                <th>Description</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var eventItem in forecasts)
-            {
-                <tr>
-                    <td>@eventItem.Date.ToShortDateString()</td>
-                    <td>Event Name Placeholder</td>
-                    <td>Event Location Placeholder</td>
-                    <td>@eventItem.Summary</td>
-                </tr>
-            }
-        </tbody>
-    </table>
+    <ul>
+        @foreach (var eventItem in events)
+        {
+            <li>
+                <h3>@eventItem?.Name</h3>
+                <p>Date: @eventItem?.DateTime.ToShortDateString()</p>
+                <p>Time: @eventItem?.DateTime.ToShortTimeString()</p>
+                <p>Location: @eventItem?.Location</p>
+                @if (!string.IsNullOrEmpty(eventItem?.PictureUrl))
+                {
+                    <img src="@eventItem?.PictureUrl" alt="@eventItem?.Name" style="max-width: 200px; height: auto; margin-bottom: 10px;" />
+                }
+                <p>Description: @eventItem?.Description</p>
+
+                @if (UserService.IsLoggedIn)
+                {
+                    <button class="btn btn-primary" @onclick="() => ShowEventDetails(eventItem)">View Details & Match</button>
+                }
+                else
+                {
+                    <p>Log in to view details and match.</p>
+                }
+                <hr />
+            </li>
+        }
+    </ul>
+}
+
+@if (selectedEvent != null && showEventDetails)
+{
+    <div class="modal fade show" tabindex="-1" role="dialog" style="display: block;">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">@selectedEvent?.Name</h5>
+                    <button type="button" class="btn-close" @onclick="CloseEventDetails" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p>Date: @selectedEvent?.DateTime.ToShortDateString()</p>
+                    <p>Time: @selectedEvent?.DateTime.ToShortTimeString()</p>
+                    <p>Location: @selectedEvent?.Location</p>
+                    @if (!string.IsNullOrEmpty(selectedEvent?.PictureUrl))
+                    {
+                        <img src="@selectedEvent?.PictureUrl" alt="@selectedEvent?.Name" style="width: 100%; height: auto; margin-bottom: 10px;" />
+                    }
+                    <p>Description: @selectedEvent?.Description</p>
+
+                    @if (showAttendees)
+                    {
+                        <h4>Attendees to Match With:</h4>
+                        @if (attendees != null && attendees.Any())
+                        {
+                            <ul>
+                                @foreach (var attendee in attendees)
+                                {
+                                    <li>
+                                        <div class="d-flex align-items-center">
+                                            <img src="@attendee.ProfilePicture" alt="@attendee.FullName" style="width: 50px; height: 50px; border-radius: 50%; margin-right: 10px;" />
+                                            <div>@attendee.FullName</div>
+                                            <div class="ms-auto">
+                                                <button class="btn btn-success btn-sm" @onclick="() => SwipeRightEvent(attendee.UserID)">Match</button>
+                                                <button class="btn btn-danger btn-sm ms-2" @onclick="() => SwipeLeftEvent()">Decline</button>
+                                            </div>
+                                        </div>
+                                        <hr />
+                                    </li>
+                                }
+                            </ul>
+                        }
+                        else
+                        {
+                            <p>No other users to match with for this event.</p>
+                        }
+                    }
+                    else if (UserService.IsLoggedIn)
+                    {
+                        <button class="btn btn-primary" @onclick="LoadAttendees">Match with Attendees</button>
+                    }
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" @onclick="CloseEventDetails">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal-backdrop fade show"></div>
+}
+
+@if (showMatchModal)
+{
+    <div class="modal fade show" tabindex="-1" role="dialog" style="display: block;">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Event Match!</h5>
+                    <button type="button" class="btn-close" @onclick="CloseMatchModal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p>You've matched with @matchedEventUser?.FullName for @selectedEvent?.Name on @selectedEvent?.DateTime.ToShortDateString() at @selectedEvent?.DateTime.ToShortTimeString() in @selectedEvent?.Location!</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" @onclick="GoToChatWithEventMatch">Chat</button>
+                    <button type="button" class="btn btn-secondary" @onclick="CloseMatchModal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal-backdrop fade show"></div>
 }
 
 @code {
-    private WeatherForecast[]? forecasts;
+    private List<Event>? events;
+    private Event? selectedEvent;
+    private bool showEventDetails = false;
+    private bool showAttendees = false;
+    private List<User>? attendees;
+    private User? matchedEventUser;
+    private bool showMatchModal = false;
+    private string matchNotification = "";
 
     protected override async Task OnInitializedAsync()
     {
-        forecasts = await ForecastService.GetForecastAsync(DateOnly.FromDateTime(DateTime.Now));
+        events = await EventService.GetEventsAsync(); // Assuming you have an EventService to fetch events
+    }
+
+    private void ShowEventDetails(Event? eventItem)
+    {
+        selectedEvent = eventItem;
+        showEventDetails = true;
+        showAttendees = false;
+    }
+
+    private async Task LoadAttendees()
+    {
+        if (selectedEvent != null && UserService.CurrentUser != null)
+        {
+            var allUsers = await UserDataService.GetUsersAsync();
+            if (allUsers != null && allUsers.Any())
+            {
+                attendees = allUsers.Where(u => u.UserID != UserService.CurrentUser.UserID).ToList(); // For simplicity, all other users
+                showAttendees = true;
+            }
+            else
+            {
+                attendees = null;
+                showAttendees = true;
+            }
+        }
+    }
+
+    private async Task SwipeRightEvent(long otherUserId)
+    {
+        if (selectedEvent != null && UserService.CurrentUser != null)
+        {
+            MatchService.AddPotentialMatch(UserService.CurrentUser.UserID, otherUserId, selectedEvent.Id);
+            Console.WriteLine($"Potential event match: {UserService.CurrentUser.UserID} -> {otherUserId} for event {selectedEvent.Id}");
+
+            if (MatchService.CheckForMutualMatch(UserService.CurrentUser.UserID, otherUserId, selectedEvent.Id))
+            {
+                var matchedUser = await UserDataService.GetUserByIdAsync(otherUserId);
+                if (matchedUser != null)
+                {
+                    matchedEventUser = matchedUser;
+                    matchNotification = $"You matched with {matchedUser.FullName} for {selectedEvent.Name}!";
+                    showMatchModal = true;
+                }
+            }
+            StateHasChanged();
+        }
+    }
+
+    private void SwipeLeftEvent()
+    {
+        // Handle decline logic if needed
+        Console.WriteLine("Declined");
+    }
+
+    private void CloseEventDetails()
+    {
+        selectedEvent = null;
+        showEventDetails = false;
+        showAttendees = false;
+    }
+
+    private void CloseMatchModal()
+    {
+        showMatchModal = false;
+        matchNotification = "";
+        matchedEventUser = null;
+    }
+
+    private void GoToChatWithEventMatch()
+    {
+        if (selectedEvent != null && matchedEventUser != null && UserService.CurrentUser != null)
+        {
+            NavigationManager.NavigateTo($"/chat/{UserService.CurrentUser.UserID}/{matchedEventUser.UserID}?eventId={selectedEvent.Id}");
+        }
+        CloseMatchModal();
     }
 }

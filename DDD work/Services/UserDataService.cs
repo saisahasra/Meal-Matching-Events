@@ -28,7 +28,7 @@ namespace DDD_work.Services
 
             try
             {
-                var jsonString = await File.ReadAllTextAsync(filePath);// reads the JSON file content
+                var jsonString = await File.ReadAllTextAsync(filePath); // reads the JSON file content
                 var options = new JsonSerializerOptions
                 {
                     PropertyNameCaseInsensitive = true // To handle case differences if any
@@ -43,13 +43,13 @@ namespace DDD_work.Services
             }
         }
 
-        public async Task<User> AuthenticateUserAsync(string username, string password) // Authenticates a user based on username and password
+        public async Task<User?> AuthenticateUserAsync(string username, string password) // Authenticates a user based on username and password
         {
             var users = await GetUsersAsync();
             return users?.FirstOrDefault(u => u.Username == username && u.Password == password); // finds a user with matching credentials
         }
 
-        public async Task<User> GetUserByIdAsync(long userId)
+        public async Task<User?> GetUserByIdAsync(long userId)
         {
             var users = await GetUsersAsync();
             return users?.FirstOrDefault(u => u.UserID == userId);

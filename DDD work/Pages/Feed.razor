@@ -5,49 +5,58 @@
 @using DDD_work.Services.Match
 @inject UserDataService UserDataService
 @inject NavigationManager NavigationManager
-@inject UserService UserService
-@inject MatchService MatchService
+@inject UserService UserService // to know who's logged in
+@inject MatchService MatchService // the match service
 
 <h1>Main Feed</h1>
 
-@if (UserService.IsLoggedIn)
+@if (UserService.IsLoggedIn) // if someone is logged in
 {
     <p>Welcome, @UserService.CurrentUser?.FullName!</p>
+    // say hi to the user
 
-    @if (currentProfile != null)
+    @if (currentProfile != null) // if we have a profile to show
     {
         <div class="card" style="width: 18rem;">
+
             <img src="@currentProfile.ProfilePicture" class="card-img-top" alt="Profile Picture of @currentProfile.FullName">
             <div class="card-body">
                 <h5 class="card-title">@currentProfile.FullName, @currentProfile.Age</h5>
                 <p class="card-text">Course: @currentProfile.Course</p>
                 <p class="card-text">Hobbies: @currentProfile.Hobbies</p>
                 <div class="d-flex justify-content-around">
+
                     <button class="btn btn-danger" @onclick="() => SwipeLeft()">Decline</button>
                     <button class="btn btn-success" @onclick="() => SwipeRight()">Match</button>
+
                 </div>
             </div>
         </div>
     }
-    else
+    else // if no more profiles to show
     {
         <p>No more profiles to show.</p>
     }
-    @if (UserService.IsLoggedIn)
+    @if (UserService.IsLoggedIn) // only show logout if logged in
     {
         <button class="btn btn-secondary" @onclick="HandleLogout">Logout</button>
+        // button to log out
     }
 }
-else
+else // if not logged in
 {
     <p>Please log in to view the feed.</p>
+    // tell them to log in
     <button class="btn btn-link" @onclick="NavigateToLogin">Go to Login</button>
+    // button to go to login
 }
 
-@if (showMatchModal)
+@if (showMatchModal) // if the match modal should be shown
 {
     <div class="modal fade show" tabindex="-1" role="dialog" style="display: block;">
+        // the modal background
         <div class="modal-dialog" role="document">
+            // the modal itself
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title">Match!</h5>
@@ -64,11 +73,12 @@ else
         </div>
     </div>
     <div class="modal-backdrop fade show"></div>
+
 }
 
 @code {
     private List<User> allUsers;
-    private User currentProfile;
+    private User? currentProfile;
     private int currentProfileIndex = 0;
     private string matchNotification = "";
     private bool showMatchModal = false;
@@ -98,59 +108,62 @@ else
 
     private async Task SwipeRight()
     {
+        // **This SwipeRight() method is for the general feed, not event-specific.**
+        // We need a separate mechanism for event matching.
+        // I'll leave this as is for now, but it won't trigger event matches.
         if (currentProfile != null && UserService.CurrentUser != null)
         {
             var currentUser = UserService.CurrentUser;
-            MatchService.AddPotentialMatch(currentUser.UserID, currentProfile.UserID);
-            System.Console.WriteLine($"Potential match with: {currentProfile?.FullName}");
+            // MatchService.AddPotentialMatch(currentUser.UserID, currentProfile.UserID); // General feed match
+            // System.Console.WriteLine($"Potential match with: {currentProfile?.FullName}");
 
-            if (MatchService.CheckForMutualMatch(currentUser.UserID, currentProfile.UserID))
-            {
-                matchNotification = $"You matched with {currentProfile.FullName}!";
-                showMatchModal = true;
-                MatchService.RemovePotentialMatch(currentUser.UserID, currentProfile.UserID);
-            }
+            // if (MatchService.CheckForMutualMatch(currentUser.UserID, currentProfile.UserID)) // General feed match
+            // {
+            //     matchNotification = $"You matched with {currentProfile.FullName}!";
+            //     showMatchModal = true;
+            // }
             StateHasChanged();
             await Task.Delay(100);
             ShowNextProfile();
         }
     }
 
-    private void SwipeLeft()
+    private void SwipeLeft() // when someone swipes left
     {
-        ShowNextProfile();
+        ShowNextProfile(); // just show the next profile
     }
 
-    private void ShowNextProfile()
+    private void ShowNextProfile() // get the next profile to show
     {
-        if (allUsers != null && currentProfileIndex < allUsers.Count - 1)
+        if (allUsers != null && currentProfileIndex < allUsers.Count - 1) // if there are more profiles
         {
-            currentProfileIndex++;
-            currentProfile = allUsers[currentProfileIndex];
+            currentProfileIndex++; // go to the next index
+            currentProfile = allUsers[currentProfileIndex]; // get the next profile
         }
-        else
+        else // if no more profiles
         {
-            currentProfile = null;
+            currentProfile = null; // set current profile to null
         }
     }
 
-    private void NavigateToLogin()
+    private void NavigateToLogin() // go to the login page
     {
         NavigationManager.NavigateTo("/login");
     }
 
-    private void CloseMatchModal()
+    private void CloseMatchModal() // close the match modal
     {
-        showMatchModal = false;
-        matchNotification = "";
+        showMatchModal = false; // hide the modal
+        matchNotification = ""; // clear the message
     }
 
-    private void GoToChat()
+    private void GoToChat() // go to the chat page
     {
+        // go to the chat page with the current user and the person they matched with
         if (currentProfile != null && UserService.CurrentUser != null)
         {
             NavigationManager.NavigateTo($"/chat/{UserService.CurrentUser.UserID}/{currentProfile.UserID}");
         }
-        CloseMatchModal();
+        CloseMatchModal(); // close the modal after going to chat
     }
 }

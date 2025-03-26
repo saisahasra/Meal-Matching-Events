@@ -1,87 +1,172 @@
 ﻿@page "/matches"
+
 @using DDD_work.Models
+
 @using DDD_work.Services
+
 @using DDD_work.Services.Match
+
 @using DDD_work.Services.Auth
-@inject UserService UserService
-@inject UserDataService UserDataService
-@inject NavigationManager NavigationManager
-@inject MatchService MatchService
+
+@inject UserService UserService 
+
+@inject UserDataService UserDataService 
+
+@inject NavigationManager NavigationManager 
+
+@inject MatchService MatchService 
+
+
 
 <h1>My Matches</h1>
 
-@if (UserService.CurrentUser == null)
+
+
+@if (UserService.CurrentUser == null) // if no one's logged in
+
 {
-    <p>Please log in to view your matches.</p>
+
+	<p>Please log in to view your matches.</p>
+
 }
-else
+
+else // if someone is logged in
+
 {
-    @if (matches != null && matches.Any())
-    {
-        <ul>
-            @foreach (var match in matches)
-            {
-                <li>
-                    @match.FullName
-                    <button class="btn btn-primary btn-sm ms-2" @onclick="() => GoToChat(match.UserID)">Chat</button>
-                </li>
-            }
-        </ul>
-    }
-    else
-    {
-        <p>No matches yet.</p>
-    }
+
+	@if (matches != null && matches.Any()) // if we found some matches
+
+	{
+
+		<ul>
+
+			@foreach (var match in matches) // loop through each match
+
+			{
+
+				<li>
+
+					@match.FullName 
+
+					<button class="btn btn-primary btn-sm ms-2" @onclick="() => GoToChat(match.UserID)">Chat</button>
+
+				</li>
+
+			}
+
+		</ul>
+
+	}
+
+	else // if no matches yet
+
+	{
+
+		<p>No matches yet.</p>
+
+	}
+
 }
+
+
 
 @code {
-    private List<User> matches;
 
-    protected override async Task OnInitializedAsync()
-    {
-        if (UserService.CurrentUser != null)
-        {
-            await LoadMatches();
-        }
-    }
+	private List<User> matches; // a list to hold the users we've matched with
 
-    private async Task LoadMatches()
-    {
-        matches = new List<User>();
-        if (UserService.CurrentUser != null)
-        {
-            var potentialMatches = MatchService.GetPotentialMatches();
-            var currentUser = UserService.CurrentUser;
 
-            foreach (var matchPair in potentialMatches)
-            {
-                if (matchPair.User1Id == currentUser.UserID)
-                {
-                    var matchedUser = await UserDataService.GetUserByIdAsync(matchPair.User2Id);
-                    if (matchedUser != null)
-                    {
-                        matches.Add(matchedUser);
-                    }
-                }
-                else if (matchPair.User2Id == currentUser.UserID)
-                {
-                    var matchedUser = await UserDataService.GetUserByIdAsync(matchPair.User1Id);
-                    if (matchedUser != null)
-                    {
-                        matches.Add(matchedUser);
-                    }
-                }
-            }
-            // You might want to filter out one-way matches if you only want mutual matches
-            // For now, we'll list all potential matches where the current user is involved.
-        }
-    }
 
-    private void GoToChat(long otherUserId)
-    {
-        if (UserService.CurrentUser != null)
-        {
-            NavigationManager.NavigateTo($"/chat/{UserService.CurrentUser.UserID}/{otherUserId}");
-        }
-    }
+	protected override async Task OnInitializedAsync() // when the page loads
+
+	{
+
+		if (UserService.CurrentUser != null) // if someone is logged in
+
+		{
+
+			await LoadMatches(); // go get the matches
+
+		}
+
+	}
+
+
+
+	private async Task LoadMatches() // this gets the list of matches
+
+	{
+
+		matches = new List<User>(); // start with an empty list
+
+		if (UserService.CurrentUser != null) // make sure someone's logged in
+
+		{
+
+			var potentialMatches = MatchService.GetPotentialMatches(); // get all the potential matches
+
+			var currentUser = UserService.CurrentUser; // who is logged in
+
+
+
+			foreach (var matchPair in potentialMatches) // go through each potential match
+
+			{
+
+				if (matchPair.User1Id == currentUser.UserID) // if the current user is user1 in the pair
+
+				{
+
+					var matchedUser = await UserDataService.GetUserByIdAsync(matchPair.User2Id); // get info about user2
+
+					if (matchedUser != null) // if we found user2
+
+					{
+
+						matches.Add(matchedUser); // add them to our matches list
+
+					}
+
+				}
+
+				else if (matchPair.User2Id == currentUser.UserID) // if the current user is user2
+
+				{
+
+					var matchedUser = await UserDataService.GetUserByIdAsync(matchPair.User1Id); // get info about user1
+
+					if (matchedUser != null) // if we found user1
+
+					{
+
+						matches.Add(matchedUser); // add them to our matches list
+
+					}
+
+				}
+
+			}
+
+		}
+
+	}
+
+
+
+	private void GoToChat(long otherUserId) // when you click the chat button
+
+	{
+
+		if (UserService.CurrentUser != null) // make sure someone's logged in
+
+		{
+
+			// go to the chat page with the current user and the person they matched with
+
+			NavigationManager.NavigateTo($"/chat/{UserService.CurrentUser.UserID}/{otherUserId}");
+
+		}
+
+	}
+
 }
+
