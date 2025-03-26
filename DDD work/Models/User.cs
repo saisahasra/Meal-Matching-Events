@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using DDD_work.Models;
 
 namespace DDD_work.Models
 {

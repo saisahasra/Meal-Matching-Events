@@ -4,6 +4,7 @@ using System.Text.Json;
 using System.Threading.Tasks;
 using DDD_work.Models;
 using Microsoft.AspNetCore.Hosting;
+using System.Linq; // Make sure to include this for FirstOrDefault
 
 namespace DDD_work.Services
 {
@@ -13,12 +14,11 @@ namespace DDD_work.Services
         private readonly string _filePath = "users.json"; // path to the user data file
 
         public UserDataService(IWebHostEnvironment env) // Constructor to inject IWebHostEnvironment
-        
-            {
+        {
             _env = env;
         }
 
-        public async Task<List<User>> GetUsersAsync() //  reads all user data from the JSON file
+        public async Task<List<User>> GetUsersAsync() // reads all user data from the JSON file
         {
             var filePath = Path.Combine(_env.WebRootPath, _filePath); // constructs full file path
             if (!File.Exists(filePath)) // checks if file exists
@@ -46,7 +46,13 @@ namespace DDD_work.Services
         public async Task<User> AuthenticateUserAsync(string username, string password) // Authenticates a user based on username and password
         {
             var users = await GetUsersAsync();
-            return users.FirstOrDefault(u => u.Username == username && u.Password == password); // finds a user with matching credentials
+            return users?.FirstOrDefault(u => u.Username == username && u.Password == password); // finds a user with matching credentials
+        }
+
+        public async Task<User> GetUserByIdAsync(long userId)
+        {
+            var users = await GetUsersAsync();
+            return users?.FirstOrDefault(u => u.UserID == userId);
         }
     }
 }

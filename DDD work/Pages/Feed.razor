@@ -35,7 +35,7 @@
     }
     @if (UserService.IsLoggedIn)
     {
-        <button class="btn btn-link" @onclick="HandleLogout">Logout</button>
+        <button class="btn btn-secondary" @onclick="HandleLogout">Logout</button>
     }
 }
 else
@@ -57,6 +57,7 @@ else
                     <p>@matchNotification</p>
                 </div>
                 <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" @onclick="GoToChat">Chat</button>
                     <button type="button" class="btn btn-secondary" @onclick="CloseMatchModal">Close</button>
                 </div>
             </div>
@@ -100,22 +101,17 @@ else
         if (currentProfile != null && UserService.CurrentUser != null)
         {
             var currentUser = UserService.CurrentUser;
-            var potentialMatch = (currentUser.UserID, currentProfile.UserID);
-
-            // Add the potential match
             MatchService.AddPotentialMatch(currentUser.UserID, currentProfile.UserID);
             System.Console.WriteLine($"Potential match with: {currentProfile?.FullName}");
 
-            // Check if the current user is now matched with the current profile
             if (MatchService.CheckForMutualMatch(currentUser.UserID, currentProfile.UserID))
             {
                 matchNotification = $"You matched with {currentProfile.FullName}!";
                 showMatchModal = true;
-                // Optionally remove the match from potentialMatches
                 MatchService.RemovePotentialMatch(currentUser.UserID, currentProfile.UserID);
             }
-            StateHasChanged(); // Ensure the UI updates if a match occurs
-            await Task.Delay(100); // Small delay to allow the StateHasChanged to propagate
+            StateHasChanged();
+            await Task.Delay(100);
             ShowNextProfile();
         }
     }
@@ -147,5 +143,14 @@ else
     {
         showMatchModal = false;
         matchNotification = "";
+    }
+
+    private void GoToChat()
+    {
+        if (currentProfile != null && UserService.CurrentUser != null)
+        {
+            NavigationManager.NavigateTo($"/chat/{UserService.CurrentUser.UserID}/{currentProfile.UserID}");
+        }
+        CloseMatchModal();
     }
 }

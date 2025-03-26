@@ -1,36 +1,36 @@
-using DDD_work.Data; 
+using Microsoft.AspNetCore.Components.Web;
 using DDD_work.Services; 
-using Microsoft.AspNetCore.Components; 
-using Microsoft.AspNetCore.Components.Web; 
+using DDD_work.Services.Auth; // for login and stuff
+using DDD_work.Services.Match; // the matching logic
+using DDD_work.Data; 
 
-var builder = WebApplication.CreateBuilder(args); // creates a web application builder
+var builder = WebApplication.CreateBuilder(args); // this builds the web app
 
-// add services to the container
-builder.Services.AddRazorPages(); // adds support for razor pages
-builder.Services.AddServerSideBlazor(); // adds support for server-side blazor
-builder.Services.AddSingleton<WeatherForecastService>(); 
-builder.Services.AddScoped<UserDataService>();
-builder.Services.AddScoped<DDD_work.Services.Auth.UserService>();
-builder.Services.AddSingleton<DDD_work.Services.Match.MatchService>();
+// add all the services we need for now
+builder.Services.AddRazorPages(); // for regular web pages
+builder.Services.AddServerSideBlazor(); 
+builder.Services.AddSingleton<WeatherForecastService>(); // I want to remove this but im scared
+builder.Services.AddScoped<UserDataService>(); // gets user data
+builder.Services.AddScoped<UserService>(); // handles user info
+builder.Services.AddSingleton<MatchService>(); // for matching users
+builder.Services.AddHttpClient(); // allows  web calls
 
-var app = builder.Build(); // builds the web application
+var app = builder.Build(); // the app is ready
 
-// configure the http request pipeline
-if (!app.Environment.IsDevelopment()) 
+// set up how the app handles things
+if (!app.Environment.IsDevelopment()) // if we're not in development mode
 {
-    app.UseExceptionHandler("/Error"); // sets the error handling page
-    
-    app.UseHsts(); // enables http strict transport security
+    app.UseExceptionHandler("/Error"); // show an error page if things break
+   
+    app.UseHsts();
 }
 
-app.UseHttpsRedirection(); // redirects http requests to https
+app.UseHttpsRedirection(); // force https
+app.UseStaticFiles(); // serve up our static files like css
 
-app.UseStaticFiles(); // serves static files like css and images
+app.UseRouting(); // figure out the routes
 
-app.UseRouting(); // enables routing for the application
+app.MapBlazorHub(); // for the blazor connection
+app.MapFallbackToPage("/_Host"); // if nothing else matches, go here
 
-app.MapBlazorHub(); // maps the blazor hub for real-time communication
-app.MapFallbackToPage("/_Host"); // sets the fallback page for routing
-
-
-app.Run(); // runs the web application
+app.Run(); // start the app running

@@ -24,8 +24,16 @@ build_property.EnableCodeStyleSeverity =
 build_metadata.AdditionalFiles.TargetPath = QXBwLnJhem9y
 build_metadata.AdditionalFiles.CssScope = 
 
+[C:/Users/886103/Source/Repos/acw-2-group-project-repo-v2-cs_ai_02/DDD work/Pages/Chat.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQ2hhdC5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
 [C:/Users/886103/Source/Repos/acw-2-group-project-repo-v2-cs_ai_02/DDD work/Pages/Counter.razor]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQ291bnRlci5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/886103/Source/Repos/acw-2-group-project-repo-v2-cs_ai_02/DDD work/Pages/Events.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcRXZlbnRzLnJhem9y
 build_metadata.AdditionalFiles.CssScope = 
 
 [C:/Users/886103/Source/Repos/acw-2-group-project-repo-v2-cs_ai_02/DDD work/Pages/Feed.razor]
@@ -42,6 +50,18 @@ build_metadata.AdditionalFiles.CssScope =
 
 [C:/Users/886103/Source/Repos/acw-2-group-project-repo-v2-cs_ai_02/DDD work/Pages/Login.razor]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcTG9naW4ucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/886103/Source/Repos/acw-2-group-project-repo-v2-cs_ai_02/DDD work/Pages/Matches.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcTWF0Y2hlcy5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/886103/Source/Repos/acw-2-group-project-repo-v2-cs_ai_02/DDD work/Pages/MealMatching.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcTWVhbE1hdGNoaW5nLnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/886103/Source/Repos/acw-2-group-project-repo-v2-cs_ai_02/DDD work/Pages/Settings.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcU2V0dGluZ3MucmF6b3I=
 build_metadata.AdditionalFiles.CssScope = 
 
 [C:/Users/886103/Source/Repos/acw-2-group-project-repo-v2-cs_ai_02/DDD work/Shared/SurveyPrompt.razor]

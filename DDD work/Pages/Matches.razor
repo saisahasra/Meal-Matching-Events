@@ -1,0 +1,87 @@
+﻿@page "/matches"
+@using DDD_work.Models
+@using DDD_work.Services
+@using DDD_work.Services.Match
+@using DDD_work.Services.Auth
+@inject UserService UserService
+@inject UserDataService UserDataService
+@inject NavigationManager NavigationManager
+@inject MatchService MatchService
+
+<h1>My Matches</h1>
+
+@if (UserService.CurrentUser == null)
+{
+    <p>Please log in to view your matches.</p>
+}
+else
+{
+    @if (matches != null && matches.Any())
+    {
+        <ul>
+            @foreach (var match in matches)
+            {
+                <li>
+                    @match.FullName
+                    <button class="btn btn-primary btn-sm ms-2" @onclick="() => GoToChat(match.UserID)">Chat</button>
+                </li>
+            }
+        </ul>
+    }
+    else
+    {
+        <p>No matches yet.</p>
+    }
+}
+
+@code {
+    private List<User> matches;
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (UserService.CurrentUser != null)
+        {
+            await LoadMatches();
+        }
+    }
+
+    private async Task LoadMatches()
+    {
+        matches = new List<User>();
+        if (UserService.CurrentUser != null)
+        {
+            var potentialMatches = MatchService.GetPotentialMatches();
+            var currentUser = UserService.CurrentUser;
+
+            foreach (var matchPair in potentialMatches)
+            {
+                if (matchPair.User1Id == currentUser.UserID)
+                {
+                    var matchedUser = await UserDataService.GetUserByIdAsync(matchPair.User2Id);
+                    if (matchedUser != null)
+                    {
+                        matches.Add(matchedUser);
+                    }
+                }
+                else if (matchPair.User2Id == currentUser.UserID)
+                {
+                    var matchedUser = await UserDataService.GetUserByIdAsync(matchPair.User1Id);
+                    if (matchedUser != null)
+                    {
+                        matches.Add(matchedUser);
+                    }
+                }
+            }
+            // You might want to filter out one-way matches if you only want mutual matches
+            // For now, we'll list all potential matches where the current user is involved.
+        }
+    }
+
+    private void GoToChat(long otherUserId)
+    {
+        if (UserService.CurrentUser != null)
+        {
+            NavigationManager.NavigateTo($"/chat/{UserService.CurrentUser.UserID}/{otherUserId}");
+        }
+    }
+}
