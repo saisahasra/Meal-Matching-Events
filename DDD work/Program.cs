@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Components.Web;
 using DDD_work.Services;
 using DDD_work.Services.Auth; 
 using DDD_work.Services.Match;
+using DDD_work.Services.MealMatch;
 using DDD_work.Data; 
 
 var builder = WebApplication.CreateBuilder(args); // this builds the web app
@@ -13,6 +14,7 @@ builder.Services.AddSingleton<WeatherForecastService>(); // I wanna delete this 
 builder.Services.AddScoped<UserDataService>(); // gets user data
 builder.Services.AddScoped<UserService>(); // handles user info
 builder.Services.AddSingleton<MatchService>(); // for matching users
+builder.Services.AddScoped<MealMatchService>(); // Meal matching
 builder.Services.AddScoped<EventService>();
 builder.Services.AddHttpClient(); // lets us make web calls
 

@@ -1,5 +1,93 @@
-﻿@page "/meal-matching"
+﻿@page "/meal-match"
+@using DDD_work.Services.Auth
+@using DDD_work.Services.MealMatch
+@using DDD_work.Services
+@using DDD_work.Models
+@inject UserService UserService
+@inject UserDataService UserDataService
+@inject NavigationManager NavigationManager
+@inject MealMatchService MealService
 
-<h1>Meal Matching</h1>
+<h1>Meal Matching!</h1>
 
-<p>This is the meal matching page.</p>
+@if (UserService.CurrentUser == null)
+{
+    <p>Please log in to access meal matching.</p>
+}
+else
+{
+    <div>
+        <label>User ID:</label>
+        <input @bind="userId" type="number" />
+
+        <label>Location:</label>
+        <input @bind="location" type="text" />
+
+        <label>Visibility:</label>
+        <select @bind="visibility">
+            <option value="everyone">Everyone</option>
+            <option value="connections">Connections</option>
+        </select>
+
+        <button class="btn btn-primary" @onclick="PostMealMatch">Post Meal Match</button>
+    </div>
+
+    <h4>Available Meal Matches</h4>
+
+    @if (mealMatches != null && mealMatches.Any())
+    {
+        <ul>
+            @foreach (var match in mealMatches)
+            {
+                <li>
+                    @($"User {match.UserId} - {match.Location} ({match.Visibility})")
+                    <button class="btn btn-success btn-sm ms-2" @onclick="() => ViewMealMatch(match.UserId)">View</button>
+                </li>
+            }
+        </ul>
+    }
+    else
+    {
+        <p>No meal matches available.</p>
+    }
+}
+
+@code {
+    private int userId;
+    private string location;
+    private string visibility = "everyone";
+    private List<MealMatch> mealMatches = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (UserService.CurrentUser == null)
+        {
+
+            NavigationManager.NavigateTo("/login");
+        }
+        else
+        {
+            userId = (int)UserService.CurrentUser.UserID;
+            await LoadMealMatches();
+        }
+    }
+
+
+    private async Task LoadMealMatches()
+    {
+        mealMatches = await Task.Run(() => MealService.GetMealMatches("everyone"));
+    }
+
+
+    private void PostMealMatch()
+    {
+        MealService.AddMealMatch(userId, location, visibility);
+        mealMatches = MealService.GetMealMatches("everyone");
+    }
+
+    private void ViewMealMatch(int matchUserId)
+    {
+        NavigationManager.NavigateTo($"/meal-match/{matchUserId}");
+    }
+}
+

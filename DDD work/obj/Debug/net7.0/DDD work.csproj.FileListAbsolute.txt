@@ -69,3 +69,39 @@ C:\Users\886103\Source\Repos\acw-2-group-project-repo-v2-cs_ai_02\DDD work\obj\D
 C:\Users\886103\Source\Repos\acw-2-group-project-repo-v2-cs_ai_02\DDD work\obj\Debug\net7.0\DDD work.pdb
 C:\Users\886103\Source\Repos\acw-2-group-project-repo-v2-cs_ai_02\DDD work\obj\Debug\net7.0\DDD work.genruntimeconfig.cache
 C:\Users\886103\Source\Repos\acw-2-group-project-repo-v2-cs_ai_02\DDD work\obj\Debug\net7.0\ref\DDD work.dll
+C:\Users\sreek\Source\Repos\acw-2-group-project-repo-v2-cs_ai_02\DDD work\bin\Debug\net7.0\appsettings.Development.json
+C:\Users\sreek\Source\Repos\acw-2-group-project-repo-v2-cs_ai_02\DDD work\bin\Debug\net7.0\appsettings.json
+C:\Users\sreek\Source\Repos\acw-2-group-project-repo-v2-cs_ai_02\DDD work\bin\Debug\net7.0\DDD work.staticwebassets.runtime.json
+C:\Users\sreek\Source\Repos\acw-2-group-project-repo-v2-cs_ai_02\DDD work\bin\Debug\net7.0\DDD work.staticwebassets.endpoints.json
+C:\Users\sreek\Source\Repos\acw-2-group-project-repo-v2-cs_ai_02\DDD work\bin\Debug\net7.0\DDD work.exe
+C:\Users\sreek\Source\Repos\acw-2-group-project-repo-v2-cs_ai_02\DDD work\bin\Debug\net7.0\DDD work.deps.json
+C:\Users\sreek\Source\Repos\acw-2-group-project-repo-v2-cs_ai_02\DDD work\bin\Debug\net7.0\DDD work.runtimeconfig.json
+C:\Users\sreek\Source\Repos\acw-2-group-project-repo-v2-cs_ai_02\DDD work\bin\Debug\net7.0\DDD work.dll
+C:\Users\sreek\Source\Repos\acw-2-group-project-repo-v2-cs_ai_02\DDD work\bin\Debug\net7.0\DDD work.pdb
+C:\Users\sreek\Source\Repos\acw-2-group-project-repo-v2-cs_ai_02\DDD work\obj\Debug\net7.0\DDD work.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\sreek\Source\Repos\acw-2-group-project-repo-v2-cs_ai_02\DDD work\obj\Debug\net7.0\DDD work.AssemblyInfoInputs.cache
+C:\Users\sreek\Source\Repos\acw-2-group-project-repo-v2-cs_ai_02\DDD work\obj\Debug\net7.0\DDD work.AssemblyInfo.cs
+C:\Users\sreek\Source\Repos\acw-2-group-project-repo-v2-cs_ai_02\DDD work\obj\Debug\net7.0\DDD work.csproj.CoreCompileInputs.cache
+C:\Users\sreek\Source\Repos\acw-2-group-project-repo-v2-cs_ai_02\DDD work\obj\Debug\net7.0\DDD work.MvcApplicationPartsAssemblyInfo.cache
+C:\Users\sreek\Source\Repos\acw-2-group-project-repo-v2-cs_ai_02\DDD work\obj\Debug\net7.0\DDD work.RazorAssemblyInfo.cache
+C:\Users\sreek\Source\Repos\acw-2-group-project-repo-v2-cs_ai_02\DDD work\obj\Debug\net7.0\DDD work.RazorAssemblyInfo.cs
+C:\Users\sreek\Source\Repos\acw-2-group-project-repo-v2-cs_ai_02\DDD work\obj\Debug\net7.0\DDD work.sourcelink.json
+C:\Users\sreek\Source\Repos\acw-2-group-project-repo-v2-cs_ai_02\DDD work\obj\Debug\net7.0\scopedcss\Shared\MainLayout.razor.rz.scp.css
+C:\Users\sreek\Source\Repos\acw-2-group-project-repo-v2-cs_ai_02\DDD work\obj\Debug\net7.0\scopedcss\Shared\NavMenu.razor.rz.scp.css
+C:\Users\sreek\Source\Repos\acw-2-group-project-repo-v2-cs_ai_02\DDD work\obj\Debug\net7.0\scopedcss\bundle\DDD work.styles.css
+C:\Users\sreek\Source\Repos\acw-2-group-project-repo-v2-cs_ai_02\DDD work\obj\Debug\net7.0\scopedcss\projectbundle\DDD work.bundle.scp.css
+C:\Users\sreek\Source\Repos\acw-2-group-project-repo-v2-cs_ai_02\DDD work\obj\Debug\net7.0\staticwebassets.build.json
+C:\Users\sreek\Source\Repos\acw-2-group-project-repo-v2-cs_ai_02\DDD work\obj\Debug\net7.0\staticwebassets.development.json
+C:\Users\sreek\Source\Repos\acw-2-group-project-repo-v2-cs_ai_02\DDD work\obj\Debug\net7.0\staticwebassets.build.endpoints.json
+C:\Users\sreek\Source\Repos\acw-2-group-project-repo-v2-cs_ai_02\DDD work\obj\Debug\net7.0\staticwebassets\msbuild.DDD work.Microsoft.AspNetCore.StaticWebAssets.props
+C:\Users\sreek\Source\Repos\acw-2-group-project-repo-v2-cs_ai_02\DDD work\obj\Debug\net7.0\staticwebassets\msbuild.DDD work.Microsoft.AspNetCore.StaticWebAssetEndpoints.props
+C:\Users\sreek\Source\Repos\acw-2-group-project-repo-v2-cs_ai_02\DDD work\obj\Debug\net7.0\staticwebassets\msbuild.build.DDD work.props
+C:\Users\sreek\Source\Repos\acw-2-group-project-repo-v2-cs_ai_02\DDD work\obj\Debug\net7.0\staticwebassets\msbuild.buildMultiTargeting.DDD work.props
+C:\Users\sreek\Source\Repos\acw-2-group-project-repo-v2-cs_ai_02\DDD work\obj\Debug\net7.0\staticwebassets\msbuild.buildTransitive.DDD work.props
+C:\Users\sreek\Source\Repos\acw-2-group-project-repo-v2-cs_ai_02\DDD work\obj\Debug\net7.0\staticwebassets.pack.json
+C:\Users\sreek\Source\Repos\acw-2-group-project-repo-v2-cs_ai_02\DDD work\obj\Debug\net7.0\staticwebassets.upToDateCheck.txt
+C:\Users\sreek\Source\Repos\acw-2-group-project-repo-v2-cs_ai_02\DDD work\obj\Debug\net7.0\DDD work.dll
+C:\Users\sreek\Source\Repos\acw-2-group-project-repo-v2-cs_ai_02\DDD work\obj\Debug\net7.0\refint\DDD work.dll
+C:\Users\sreek\Source\Repos\acw-2-group-project-repo-v2-cs_ai_02\DDD work\obj\Debug\net7.0\DDD work.pdb
+C:\Users\sreek\Source\Repos\acw-2-group-project-repo-v2-cs_ai_02\DDD work\obj\Debug\net7.0\DDD work.genruntimeconfig.cache
+C:\Users\sreek\Source\Repos\acw-2-group-project-repo-v2-cs_ai_02\DDD work\obj\Debug\net7.0\ref\DDD work.dll
