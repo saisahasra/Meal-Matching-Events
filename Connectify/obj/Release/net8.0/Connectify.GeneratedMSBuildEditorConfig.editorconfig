@@ -1,0 +1,133 @@
+is_global = true
+build_property.TargetFramework = net8.0
+build_property.TargetPlatformMinVersion = 
+build_property.UsingMicrosoftNETSdkWeb = true
+build_property.ProjectTypeGuids = 
+build_property.InvariantGlobalization = 
+build_property.PlatformNeutralAssembly = 
+build_property.EnforceExtendedAnalyzerRules = 
+build_property._SupportedPlatformList = Linux,macOS,Windows
+build_property.RootNamespace = Connectify
+build_property.RootNamespace = Connectify
+build_property.ProjectDir = C:\Users\886103\Source\Repos\acw-2-group-project-repo-v2-cs_ai_02\Connectify\
+build_property.EnableComHosting = 
+build_property.EnableGeneratedComInterfaceComImportInterop = 
+build_property.RazorLangVersion = 8.0
+build_property.SupportLocalizedComponentNames = 
+build_property.GenerateRazorMetadataSourceChecksumAttributes = 
+build_property.MSBuildProjectDirectory = C:\Users\886103\Source\Repos\acw-2-group-project-repo-v2-cs_ai_02\Connectify
+build_property._RazorSourceGeneratorDebug = 
+build_property.EffectiveAnalysisLevelStyle = 8.0
+build_property.EnableCodeStyleSeverity = 
+
+[C:/Users/886103/Source/Repos/acw-2-group-project-repo-v2-cs_ai_02/Connectify/Components/App.razor]
+build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xBcHAucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/886103/Source/Repos/acw-2-group-project-repo-v2-cs_ai_02/Connectify/Components/Layout/RedirectToLogin.razor]
+build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xMYXlvdXRcUmVkaXJlY3RUb0xvZ2luLnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/886103/Source/Repos/acw-2-group-project-repo-v2-cs_ai_02/Connectify/Components/Pages/Counter.razor]
+build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xQYWdlc1xDb3VudGVyLnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/886103/Source/Repos/acw-2-group-project-repo-v2-cs_ai_02/Connectify/Components/Pages/Error.razor]
+build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xQYWdlc1xFcnJvci5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/886103/Source/Repos/acw-2-group-project-repo-v2-cs_ai_02/Connectify/Components/Pages/FeedPage.razor]
+build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xQYWdlc1xGZWVkUGFnZS5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/886103/Source/Repos/acw-2-group-project-repo-v2-cs_ai_02/Connectify/Components/Pages/Home.razor]
+build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xQYWdlc1xIb21lLnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/886103/Source/Repos/acw-2-group-project-repo-v2-cs_ai_02/Connectify/Components/Pages/LoginPage.razor]
+build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xQYWdlc1xMb2dpblBhZ2UucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/886103/Source/Repos/acw-2-group-project-repo-v2-cs_ai_02/Connectify/Components/Pages/Weather.razor]
+build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xQYWdlc1xXZWF0aGVyLnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/886103/Source/Repos/acw-2-group-project-repo-v2-cs_ai_02/Connectify/Components/Routes.razor]
+build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xSb3V0ZXMucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/886103/Source/Repos/acw-2-group-project-repo-v2-cs_ai_02/Connectify/Components/_Imports.razor]
+build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xfSW1wb3J0cy5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/886103/Source/Repos/acw-2-group-project-repo-v2-cs_ai_02/Connectify/Connectify/Components/App.razor]
+build_metadata.AdditionalFiles.TargetPath = Q29ubmVjdGlmeVxDb21wb25lbnRzXEFwcC5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/886103/Source/Repos/acw-2-group-project-repo-v2-cs_ai_02/Connectify/Connectify/Components/Layout/RedirectToLogin.razor]
+build_metadata.AdditionalFiles.TargetPath = Q29ubmVjdGlmeVxDb21wb25lbnRzXExheW91dFxSZWRpcmVjdFRvTG9naW4ucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/886103/Source/Repos/acw-2-group-project-repo-v2-cs_ai_02/Connectify/Connectify/Components/Pages/Counter.razor]
+build_metadata.AdditionalFiles.TargetPath = Q29ubmVjdGlmeVxDb21wb25lbnRzXFBhZ2VzXENvdW50ZXIucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/886103/Source/Repos/acw-2-group-project-repo-v2-cs_ai_02/Connectify/Connectify/Components/Pages/Error.razor]
+build_metadata.AdditionalFiles.TargetPath = Q29ubmVjdGlmeVxDb21wb25lbnRzXFBhZ2VzXEVycm9yLnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/886103/Source/Repos/acw-2-group-project-repo-v2-cs_ai_02/Connectify/Connectify/Components/Pages/FeedPage.razor]
+build_metadata.AdditionalFiles.TargetPath = Q29ubmVjdGlmeVxDb21wb25lbnRzXFBhZ2VzXEZlZWRQYWdlLnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/886103/Source/Repos/acw-2-group-project-repo-v2-cs_ai_02/Connectify/Connectify/Components/Pages/Home.razor]
+build_metadata.AdditionalFiles.TargetPath = Q29ubmVjdGlmeVxDb21wb25lbnRzXFBhZ2VzXEhvbWUucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/886103/Source/Repos/acw-2-group-project-repo-v2-cs_ai_02/Connectify/Connectify/Components/Pages/LoginPage.razor]
+build_metadata.AdditionalFiles.TargetPath = Q29ubmVjdGlmeVxDb21wb25lbnRzXFBhZ2VzXExvZ2luUGFnZS5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/886103/Source/Repos/acw-2-group-project-repo-v2-cs_ai_02/Connectify/Connectify/Components/Pages/Weather.razor]
+build_metadata.AdditionalFiles.TargetPath = Q29ubmVjdGlmeVxDb21wb25lbnRzXFBhZ2VzXFdlYXRoZXIucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/886103/Source/Repos/acw-2-group-project-repo-v2-cs_ai_02/Connectify/Connectify/Components/Routes.razor]
+build_metadata.AdditionalFiles.TargetPath = Q29ubmVjdGlmeVxDb21wb25lbnRzXFJvdXRlcy5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/886103/Source/Repos/acw-2-group-project-repo-v2-cs_ai_02/Connectify/Connectify/Components/_Imports.razor]
+build_metadata.AdditionalFiles.TargetPath = Q29ubmVjdGlmeVxDb21wb25lbnRzXF9JbXBvcnRzLnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/886103/Source/Repos/acw-2-group-project-repo-v2-cs_ai_02/Connectify/Connectify/_Imports.razor]
+build_metadata.AdditionalFiles.TargetPath = Q29ubmVjdGlmeVxfSW1wb3J0cy5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/886103/Source/Repos/acw-2-group-project-repo-v2-cs_ai_02/Connectify/_Imports.razor]
+build_metadata.AdditionalFiles.TargetPath = X0ltcG9ydHMucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/886103/Source/Repos/acw-2-group-project-repo-v2-cs_ai_02/Connectify/Components/Layout/MainLayout.razor]
+build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xMYXlvdXRcTWFpbkxheW91dC5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = b-2k1pw3a4zx
+
+[C:/Users/886103/Source/Repos/acw-2-group-project-repo-v2-cs_ai_02/Connectify/Components/Layout/NavMenu.razor]
+build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xMYXlvdXRcTmF2TWVudS5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = b-b73wnotuq9
+
+[C:/Users/886103/Source/Repos/acw-2-group-project-repo-v2-cs_ai_02/Connectify/Connectify/Components/Layout/MainLayout.razor]
+build_metadata.AdditionalFiles.TargetPath = Q29ubmVjdGlmeVxDb21wb25lbnRzXExheW91dFxNYWluTGF5b3V0LnJhem9y
+build_metadata.AdditionalFiles.CssScope = b-vaqpnh8r14
+
+[C:/Users/886103/Source/Repos/acw-2-group-project-repo-v2-cs_ai_02/Connectify/Connectify/Components/Layout/NavMenu.razor]
+build_metadata.AdditionalFiles.TargetPath = Q29ubmVjdGlmeVxDb21wb25lbnRzXExheW91dFxOYXZNZW51LnJhem9y
+build_metadata.AdditionalFiles.CssScope = b-id5rid6j3l
+
+[C:/Users/886103/Source/Repos/acw-2-group-project-repo-v2-cs_ai_02/Connectify/Components/Pages/_Host.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Q29tcG9uZW50c1xQYWdlc1xfSG9zdC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/886103/Source/Repos/acw-2-group-project-repo-v2-cs_ai_02/Connectify/Connectify/Components/Pages/_Host.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Q29ubmVjdGlmeVxDb21wb25lbnRzXFBhZ2VzXF9Ib3N0LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
