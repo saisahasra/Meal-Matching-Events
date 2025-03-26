@@ -1,0 +1,53 @@
+﻿@page "/login"
+@using DDD_work.Services
+@inject UserDataService UserDataService
+@inject NavigationManager NavigationManager
+
+<h1>Sign In</h1>
+
+@if (!string.IsNullOrEmpty(ErrorMessage))  // displays error messages
+{
+    <div class="alert alert-danger" role="alert">
+        @ErrorMessage
+    </div>
+}
+
+<div class="mb-3">
+    <label for="username" class="form-label">Username</label>
+    <input type="text" class="form-control" id="username" @bind="Username"> 
+</div>
+
+<div class="mb-3">
+    <label for="password" class="form-label">Password</label>
+    <input type="password" class="form-control" id="password" @bind="Password">
+</div>
+
+<button type="button" class="btn btn-primary" @onclick="HandleLogin">Continue</button>
+
+@code {
+    private string Username { get; set; }
+    private string Password { get; set; }
+    private string ErrorMessage { get; set; }
+
+    private async Task HandleLogin()
+    {
+        ErrorMessage = string.Empty;
+        if (string.IsNullOrWhiteSpace(Username) || string.IsNullOrWhiteSpace(Password))
+        {
+            ErrorMessage = "Please enter both username and password.";
+            return;
+        }
+
+        var authenticatedUser = await UserDataService.AuthenticateUserAsync(Username, Password);
+
+        if (authenticatedUser != null)
+        {
+            
+            NavigationManager.NavigateTo("/feed");
+        }
+        else
+        {
+            ErrorMessage = "Incorrect username/password. Please try again.";
+        }
+    }
+}

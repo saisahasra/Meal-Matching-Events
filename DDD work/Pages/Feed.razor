@@ -1,0 +1,86 @@
+﻿@page "/feed"
+@using DDD_work.Models
+@using DDD_work.Services
+@inject UserDataService UserDataService
+@inject NavigationManager NavigationManager
+
+<h1>Main Feed</h1>
+
+@if (currentUser != null)
+{
+    @if (currentProfile != null)
+    {
+        <div class="card" style="width: 18rem;">
+            <img src="@currentProfile.ProfilePicture" class="card-img-top" alt="Profile Picture of @currentProfile.FullName">
+            <div class="card-body">
+                <h5 class="card-title">@currentProfile.FullName, @currentProfile.Age</h5>
+                <p class="card-text">Course: @currentProfile.Course</p>
+                <p class="card-text">Hobbies: @currentProfile.Hobbies</p>
+                <div class="d-flex justify-content-around">
+                    <button class="btn btn-danger" @onclick="() => SwipeLeft()">Decline</button>
+                    <button class="btn btn-success" @onclick="() => SwipeRight()">Match</button>
+                </div>
+            </div>
+        </div>
+    }
+    else
+    {
+        <p>No more profiles to show.</p>
+    }
+}
+else
+{
+    <p>Please log in to view the feed.</p>
+    <button class="btn btn-link" @onclick="NavigateToLogin">Go to Login</button>
+}
+
+@code {
+    private List<User> allUsers;
+    private User currentProfile;
+    private User currentUser;
+    private int currentProfileIndex = 0;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var users = await UserDataService.GetUsersAsync();
+        if (users.Count > 0)
+        {
+            currentUser = users.FirstOrDefault(u => u.Username == "Marc"); // Assuming Marc is the logged-in user for now
+            allUsers = users.Where(u => u.Username != currentUser?.Username).ToList();
+            if (allUsers.Any())
+            {
+                currentProfile = allUsers.FirstOrDefault();
+            }
+        }
+    }
+
+    private void SwipeLeft()
+    {
+        ShowNextProfile();
+    }
+
+    private void SwipeRight()
+    {
+        Console.WriteLine($"Matched with: {currentProfile?.FullName}");
+        ShowNextProfile();
+        // Implement the "You Matched!" popup logic here
+    }
+
+    private void ShowNextProfile()
+    {
+        if (allUsers != null && currentProfileIndex < allUsers.Count - 1)
+        {
+            currentProfileIndex++;
+            currentProfile = allUsers[currentProfileIndex];
+        }
+        else
+        {
+            currentProfile = null;
+        }
+    }
+
+    private void NavigateToLogin()
+    {
+        NavigationManager.NavigateTo("/login");
+    }
+}
