@@ -1,11 +1,13 @@
 ﻿@page "/login"
 @using DDD_work.Services
+@using DDD_work.Services.Auth 
 @inject UserDataService UserDataService
 @inject NavigationManager NavigationManager
+@inject UserService UserService 
 
 <h1>Sign In</h1>
 
-@if (!string.IsNullOrEmpty(ErrorMessage))  // displays error messages
+@if (!string.IsNullOrEmpty(ErrorMessage))
 {
     <div class="alert alert-danger" role="alert">
         @ErrorMessage
@@ -14,7 +16,7 @@
 
 <div class="mb-3">
     <label for="username" class="form-label">Username</label>
-    <input type="text" class="form-control" id="username" @bind="Username"> 
+    <input type="text" class="form-control" id="username" @bind="Username">
 </div>
 
 <div class="mb-3">
@@ -32,6 +34,7 @@
     private async Task HandleLogin()
     {
         ErrorMessage = string.Empty;
+
         if (string.IsNullOrWhiteSpace(Username) || string.IsNullOrWhiteSpace(Password))
         {
             ErrorMessage = "Please enter both username and password.";
@@ -43,6 +46,7 @@
         if (authenticatedUser != null)
         {
             
+            UserService.SetCurrentUser(authenticatedUser);
             NavigationManager.NavigateTo("/feed");
         }
         else

@@ -1,13 +1,19 @@
 ﻿@page "/feed"
 @using DDD_work.Models
 @using DDD_work.Services
+@using DDD_work.Services.Auth
+@using DDD_work.Services.Match
 @inject UserDataService UserDataService
 @inject NavigationManager NavigationManager
+@inject UserService UserService
+@inject MatchService MatchService
 
 <h1>Main Feed</h1>
 
-@if (currentUser != null)
+@if (UserService.IsLoggedIn)
 {
+    <p>Welcome, @UserService.CurrentUser?.FullName!</p>
+
     @if (currentProfile != null)
     {
         <div class="card" style="width: 18rem;">
@@ -27,6 +33,10 @@
     {
         <p>No more profiles to show.</p>
     }
+    @if (UserService.IsLoggedIn)
+    {
+        <button class="btn btn-link" @onclick="HandleLogout">Logout</button>
+    }
 }
 else
 {
@@ -34,36 +44,85 @@ else
     <button class="btn btn-link" @onclick="NavigateToLogin">Go to Login</button>
 }
 
+@if (showMatchModal)
+{
+    <div class="modal fade show" tabindex="-1" role="dialog" style="display: block;">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Match!</h5>
+                    <button type="button" class="btn-close" @onclick="CloseMatchModal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p>@matchNotification</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" @onclick="CloseMatchModal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal-backdrop fade show"></div>
+}
+
 @code {
     private List<User> allUsers;
     private User currentProfile;
-    private User currentUser;
     private int currentProfileIndex = 0;
+    private string matchNotification = "";
+    private bool showMatchModal = false;
+
+    private void HandleLogout()
+    {
+        UserService.ClearCurrentUser();
+        NavigationManager.NavigateTo("/login");
+    }
 
     protected override async Task OnInitializedAsync()
     {
         var users = await UserDataService.GetUsersAsync();
-        if (users.Count > 0)
+        if (UserService.IsLoggedIn && users.Count > 0)
         {
-            currentUser = users.FirstOrDefault(u => u.Username == "Marc"); // Assuming Marc is the logged-in user for now
-            allUsers = users.Where(u => u.Username != currentUser?.Username).ToList();
-            if (allUsers.Any())
+            var currentUser = UserService.CurrentUser;
+            if (currentUser != null)
             {
-                currentProfile = allUsers.FirstOrDefault();
+                allUsers = users.Where(u => u.Username != currentUser.Username).ToList();
+                if (allUsers.Any())
+                {
+                    currentProfile = allUsers.FirstOrDefault();
+                }
             }
+        }
+    }
+
+    private async Task SwipeRight()
+    {
+        if (currentProfile != null && UserService.CurrentUser != null)
+        {
+            var currentUser = UserService.CurrentUser;
+            var potentialMatch = (currentUser.UserID, currentProfile.UserID);
+
+            // Add the potential match
+            MatchService.AddPotentialMatch(currentUser.UserID, currentProfile.UserID);
+            System.Console.WriteLine($"Potential match with: {currentProfile?.FullName}");
+
+            // Check if the current user is now matched with the current profile
+            if (MatchService.CheckForMutualMatch(currentUser.UserID, currentProfile.UserID))
+            {
+                matchNotification = $"You matched with {currentProfile.FullName}!";
+                showMatchModal = true;
+                // Optionally remove the match from potentialMatches
+                MatchService.RemovePotentialMatch(currentUser.UserID, currentProfile.UserID);
+            }
+            StateHasChanged(); // Ensure the UI updates if a match occurs
+            await Task.Delay(100); // Small delay to allow the StateHasChanged to propagate
+            ShowNextProfile();
         }
     }
 
     private void SwipeLeft()
     {
         ShowNextProfile();
-    }
-
-    private void SwipeRight()
-    {
-        Console.WriteLine($"Matched with: {currentProfile?.FullName}");
-        ShowNextProfile();
-        // Implement the "You Matched!" popup logic here
     }
 
     private void ShowNextProfile()
@@ -82,5 +141,11 @@ else
     private void NavigateToLogin()
     {
         NavigationManager.NavigateTo("/login");
+    }
+
+    private void CloseMatchModal()
+    {
+        showMatchModal = false;
+        matchNotification = "";
     }
 }

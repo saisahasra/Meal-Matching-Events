@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("DDD work")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Release")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+f4ff7fb867c1b18a7c4b2c67a6300ddc1591bca1")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+b2e7ded64c690a00ebb6decc47e88a1049435925")]
 [assembly: System.Reflection.AssemblyProductAttribute("DDD work")]
 [assembly: System.Reflection.AssemblyTitleAttribute("DDD work")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

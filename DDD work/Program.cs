@@ -9,7 +9,9 @@ var builder = WebApplication.CreateBuilder(args); // creates a web application b
 builder.Services.AddRazorPages(); // adds support for razor pages
 builder.Services.AddServerSideBlazor(); // adds support for server-side blazor
 builder.Services.AddSingleton<WeatherForecastService>(); 
-builder.Services.AddScoped<UserDataService>(); 
+builder.Services.AddScoped<UserDataService>();
+builder.Services.AddScoped<DDD_work.Services.Auth.UserService>();
+builder.Services.AddSingleton<DDD_work.Services.Match.MatchService>();
 
 var app = builder.Build(); // builds the web application
 
@@ -29,5 +31,6 @@ app.UseRouting(); // enables routing for the application
 
 app.MapBlazorHub(); // maps the blazor hub for real-time communication
 app.MapFallbackToPage("/_Host"); // sets the fallback page for routing
+
 
 app.Run(); // runs the web application
