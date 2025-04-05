@@ -1,9 +1,10 @@
 using Microsoft.AspNetCore.Components.Web;
+using Microsoft.EntityFrameworkCore;
 using DDD_work.Services;
 using DDD_work.Services.Auth; 
 using DDD_work.Services.Match;
-using DDD_work.Services.MealMatch;
-using DDD_work.Data; 
+using DDD_work.Data;
+
 
 var builder = WebApplication.CreateBuilder(args); // this builds the web app
 
@@ -17,6 +18,8 @@ builder.Services.AddSingleton<MatchService>(); // for matching users
 builder.Services.AddScoped<MealMatchService>(); // Meal matching
 builder.Services.AddScoped<EventService>();
 builder.Services.AddHttpClient(); // lets us make web calls
+builder.Services.AddScoped<MealMatchService>();
+builder.Services.AddScoped<UserService>();
 
 var app = builder.Build(); // the app is ready
 

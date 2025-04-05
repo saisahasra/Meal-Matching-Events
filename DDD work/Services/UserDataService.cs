@@ -53,6 +53,14 @@ namespace DDD_work.Services
         {
             var users = await GetUsersAsync();
             return users?.FirstOrDefault(u => u.UserID == userId);
+
         }
+
+        public async Task<List<User>> GetUserConnections(long userId)
+        {
+            // Fetch the user's connections from the database (mock data for now)
+            return await Task.FromResult(new List<User>());
+        }
+
     }
 }

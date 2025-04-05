@@ -1,93 +1,272 @@
-﻿@page "/meal-match"
-@using DDD_work.Services.Auth
-@using DDD_work.Services.MealMatch
-@using DDD_work.Services
+﻿
+
+@page "/meal-match"
 @using DDD_work.Models
+@using DDD_work.Services
+@using DDD_work.Services.Auth
+@inject MealMatchService MealMatchService
 @inject UserService UserService
 @inject UserDataService UserDataService
-@inject NavigationManager NavigationManager
-@inject MealMatchService MealService
+@inject IJSRuntime JsRuntime
 
-<h1>Meal Matching!</h1>
+<h1 class="text-center text-primary">Meal Matching</h1>
 
-@if (UserService.CurrentUser == null)
-{
-    <p>Please log in to access meal matching.</p>
-}
-else
-{
-    <div>
-        <label>User ID:</label>
-        <input @bind="userId" type="number" />
+<div class="container mt-4">
+    <button class="btn btn-success mb-3" @onclick="ShowPostMealModal">Post a Meal Match</button>
 
-        <label>Location:</label>
-        <input @bind="location" type="text" />
-
-        <label>Visibility:</label>
-        <select @bind="visibility">
-            <option value="everyone">Everyone</option>
-            <option value="connections">Connections</option>
-        </select>
-
-        <button class="btn btn-primary" @onclick="PostMealMatch">Post Meal Match</button>
-    </div>
-
-    <h4>Available Meal Matches</h4>
-
-    @if (mealMatches != null && mealMatches.Any())
+    @if (meals == null)
     {
-        <ul>
-            @foreach (var match in mealMatches)
-            {
-                <li>
-                    @($"User {match.UserId} - {match.Location} ({match.Visibility})")
-                    <button class="btn btn-success btn-sm ms-2" @onclick="() => ViewMealMatch(match.UserId)">View</button>
-                </li>
-            }
-        </ul>
+        <p><em>Loading meals...</em></p>
+    }
+    else if (meals.Count == 0)
+    {
+        <p>No meal matches available at the moment.</p>
     }
     else
     {
-        <p>No meal matches available.</p>
+        <div class="row">
+            @foreach (var meal in meals)
+            {
+                <div class="col-md-4">
+                    <div class="card shadow-sm mb-3">
+                        <div class="card-body">
+                            <h5 class="card-title">@meal.Name</h5>
+@*                             <p><b>Time:</b> @meal.MealTime</p> *@
+@*                             <p><strong>Posted By:</strong> @(mealPoster?.FullName ?? mealPoster?.Username ?? "Unknown")</p>
+                            <!-- Display the poster's name --> *@
+                            <p><b>Time:</b> @meal.MealTime.ToString("f")</p>
+                            <p><b>Location:</b> @(string.IsNullOrEmpty(meal.Location) ? "Not specified" : meal.Location)</p>
+@*                             <p><b>Description:</b> @(string.IsNullOrEmpty(meal.Description) ? "No description provided." : meal.Description)</p> *@
+
+                            <button @onclick="() => ShowMealDetails(meal)" class="btn btn-primary">View</button>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+
     }
-}
+</div>
 
-@code {
-    private int userId;
-    private string location;
-    private string visibility = "everyone";
-    private List<MealMatch> mealMatches = new();
-
-    protected override async Task OnInitializedAsync()
-    {
-        if (UserService.CurrentUser == null)
+@if (showMealDetails && selectedMeal != null)
+{
+    <div class="meal-details">
+        <h3>@selectedMeal.Name</h3>
+        <p><strong>Posted By:</strong> @mealPoster?.FullName</p>
+        <p><strong>Description:</strong> @selectedMeal.Description</p>
+        @if (!string.IsNullOrEmpty(selectedMeal.Location))
         {
-
-            NavigationManager.NavigateTo("/login");
+            <p><strong>Location:</strong> @selectedMeal.Location</p>
         }
         else
         {
-            userId = (int)UserService.CurrentUser.UserID;
-            await LoadMealMatches();
+            <p><strong>Location:</strong> Not specified</p>
+        }
+
+        <p><strong>Date & Time:</strong> @selectedMeal.MealTime</p>
+
+        <button @onclick="HandleMatch" class="btn btn-success">Match</button>
+
+    </div>
+}
+
+<!-- Post Meal Modal -->
+@if (showPostMealModal)
+{
+    <div class="modal fade show" tabindex="-1" role="dialog" style="display: block;">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Post a Meal Match</h5>
+                    <button type="button" class="btn-close" @onclick="ClosePostMealModal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <input type="text" class="form-control mb-2" placeholder="Meal Name" @bind="@newMeal.Name" />
+                    <input type="text" class="form-control mb-2" placeholder="Location" @bind="newMeal.Location" />
+                     <textarea class="form-control mb-2" placeholder="Description" @bind="newMeal.Description"></textarea>
+                    <!-- Added Location -->
+                    <input type="datetime-local" class="form-control mb-2" @bind="@newMeal.MealTime" />
+
+
+                    <label>Visibility:</label>
+                    <select class="form-control mb-2" @bind="@mealVisibility">
+                        <option value="Everyone">Everyone</option>
+                        <option value="Connections">Connections Only</option>
+                    </select>
+
+                    @if (mealVisibility == "Connections")
+                    {
+                        <label>Select Connection:</label>
+                        <select class="form-control mb-2" @bind="@selectedConnection">
+                            @foreach (var connection in userConnections)
+                            {
+                                <option value="@connection.UserID">@connection.FullName</option>
+                            }
+                        </select>
+                    }
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" @onclick="PostMealMatch">Post</button>
+                    <button type="button" class="btn btn-secondary" @onclick="ClosePostMealModal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal-backdrop fade show"></div>
+}
+
+@if (showMatchModal)
+{
+    <div class="modal fade show" tabindex="-1" style="display: block;">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Match Confirmed</h5>
+                    <button type="button" class="btn-close" aria-label="Close" @onclick="CloseMatchModal"></button>
+                </div>
+                <div class="modal-body">
+                    <p>Matched with: @mealPoster?.FullName</p>
+                    <button class="btn btn-primary">Chat</button> @* chat functionality here *@
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal-backdrop fade show"></div>
+}
+
+
+@code {
+    private List<MealMatch> meals;
+    private MealMatch newMeal = new();
+    private MealMatch selectedMeal;
+    private bool showPostMealModal = false;
+    private bool showMealDetails = false;
+    private User mealPoster;
+    private bool showMatchModal = false;
+    private User matchedUser;
+
+
+    private static List<MealMatch> _mealMatches = new List<MealMatch>
+{
+    new MealMatch { Id = 1, Name = "Pasta Night", MealTime = DateTime.Now.AddHours(1), Description = "Delicious pasta with a side of garlic bread.", PosterUserId = 1, Visibility = VisibilityOption.Everyone, Location = "Downtown Cafe" },
+    new MealMatch { Id = 2, Name = "Pizza Party", MealTime = DateTime.Now.AddHours(3), Description = "A fun pizza night for all! Bring your appetite!", PosterUserId = 2, Visibility = VisibilityOption.ConnectionsOnly, Location = "Main Street Pizzeria" },
+};
+
+
+    private string mealVisibility = "Everyone"; // Default visibility to "Everyone"
+    private long? selectedConnection;
+    private List<User> userConnections = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        meals = await GetMealMatchesBasedOnVisibility();
+    }
+
+
+
+    private async Task<List<MealMatch>> GetMealMatchesBasedOnVisibility()
+    {
+
+        var allMeals = await MealMatchService.GetMealMatches();
+        var currentUserId = UserService.CurrentUser?.UserID;
+
+        return allMeals.Where(meal =>
+            meal.Visibility == VisibilityOption.Everyone ||
+            (meal.Visibility == VisibilityOption.ConnectionsOnly && meal.AllowedUserId == currentUserId)
+        ).ToList();
+    }
+
+    private async Task ShowMealDetails(MealMatch meal)
+    {
+        selectedMeal = meal;
+        mealPoster = await UserDataService.GetUserByIdAsync(meal.PosterUserId); // this now fetches full user data
+        showMealDetails = true;
+    }
+
+
+    private void ShowPostMealModal()
+    {
+        Console.WriteLine($"Debug: ShowPostMealModal - Initial newMeal: {newMeal.Location}, {newMeal.Description}");
+        showPostMealModal = true;
+    }
+
+
+    private void ClosePostMealModal()
+    {
+        showPostMealModal = false;
+    }
+
+    private async Task PostMealMatch()
+    {
+        Console.WriteLine($"Location: {newMeal.Location}");
+        Console.WriteLine($"Description: {newMeal.Description}");
+
+        // Set the PosterUserId and Visibility
+        newMeal.PosterUserId = (int)UserService.CurrentUser.UserID;
+        newMeal.Visibility = Enum.Parse<VisibilityOption>(mealVisibility);
+
+        // Set the AllowedUserId if ConnectionsOnly is selected
+        newMeal.AllowedUserId = mealVisibility == "Connections" && selectedConnection.HasValue ? (int)selectedConnection.Value : (int?)null;
+
+        // Ensure Location is not null or empty
+        newMeal.Location = string.IsNullOrWhiteSpace(newMeal.Location) ? "Not specified" : newMeal.Location;
+
+        // Ensure Description is not null or empty
+        newMeal.Description = string.IsNullOrWhiteSpace(newMeal.Description) ? "No description provided." : newMeal.Description;
+
+        // Ensure MealTime is not default (01 January 0001 00:00)
+        if (newMeal.MealTime == DateTime.MinValue)
+        {
+            newMeal.MealTime = DateTime.Now.AddHours(1); // Default to 1 hour from now if invalid
+        }
+
+        Console.WriteLine($"Location: {newMeal.Location}");
+        Console.WriteLine($"Description: {newMeal.Description}");
+
+
+        // Add the new meal match to the list
+        await MealMatchService.AddMealMatch(newMeal);
+
+        // Refresh the meals list after adding the new meal
+        meals = await GetMealMatchesBasedOnVisibility();
+
+        // Close the modal
+        showPostMealModal = false;
+
+        // Reset the form after posting
+        newMeal = new MealMatch();
+    }
+
+
+    private async Task MatchWithUser()
+    {
+        if (selectedMeal != null && UserService.CurrentUser != null)
+        {
+            await MealMatchService.MatchWithUser((int)UserService.CurrentUser.UserID, (int)selectedMeal.Id);
+
+            matchedUser = await UserDataService.GetUserByIdAsync((long)selectedMeal.AllowedUserId);
+
+            showMatchModal = true;
         }
     }
 
 
-    private async Task LoadMealMatches()
+    private async Task HandleMatch()
     {
-        mealMatches = await Task.Run(() => MealService.GetMealMatches("everyone"));
+        if (selectedMeal != null && UserService.CurrentUser != null)
+        {
+            await MealMatchService.MatchWithUser((int)UserService.CurrentUser.UserID, (int)selectedMeal.Id);
+            showMatchModal = true;
+        }
+    }
+    private void CloseMatchModal()
+    {
+        showMatchModal = false;
     }
 
 
-    private void PostMealMatch()
-    {
-        MealService.AddMealMatch(userId, location, visibility);
-        mealMatches = MealService.GetMealMatches("everyone");
-    }
 
-    private void ViewMealMatch(int matchUserId)
-    {
-        NavigationManager.NavigateTo($"/meal-match/{matchUserId}");
-    }
 }
+
+
 

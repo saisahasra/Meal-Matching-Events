@@ -58,6 +58,20 @@ namespace DDD_work.Services.Auth
         public bool IsCurrentUser(User user)
         {
             return _currentUser != null && _currentUser.UserID == user.UserID; // compare user ids
+
+        }
+
+        public async Task<List<User>> GetUserConnections(long userId)
+        {
+
+            return await Task.FromResult(new List<User>());
+        }
+
+
+        public async Task<User> GetUserByIdAsync(long userId)
+        {
+
+            return await Task.FromResult(new User { UserID = userId, FullName = "User " + userId });
         }
     }
 }
