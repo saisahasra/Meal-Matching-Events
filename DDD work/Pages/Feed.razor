@@ -5,75 +5,63 @@
 @using DDD_work.Services.Match
 @inject UserDataService UserDataService
 @inject NavigationManager NavigationManager
-@inject UserService UserService // to know who's logged in
-@inject MatchService MatchService // the match service
+@inject UserService UserService
+@inject MatchService MatchService
 
 <h1>Main Feed</h1>
 
-@if (UserService.IsLoggedIn) // if someone is logged in
+@if (UserService.IsLoggedIn)
 {
     <p>Welcome, @UserService.CurrentUser?.FullName!</p>
-    // say hi to the user
 
-    @if (currentProfile != null) // if we have a profile to show
+    @if (currentProfile != null)
     {
         <div class="card" style="width: 18rem;">
-
             <img src="@currentProfile.ProfilePicture" class="card-img-top" alt="Profile Picture of @currentProfile.FullName">
             <div class="card-body">
                 <h5 class="card-title">@currentProfile.FullName, @currentProfile.Age</h5>
                 <p class="card-text">Course: @currentProfile.Course</p>
                 <p class="card-text">Hobbies: @currentProfile.Hobbies</p>
                 <div class="d-flex justify-content-around">
-
                     <button class="btn btn-danger" @onclick="() => SwipeLeft()">Decline</button>
                     <button class="btn btn-success" @onclick="() => SwipeRight()">Match</button>
-
                 </div>
             </div>
         </div>
     }
-    else // if no more profiles to show
+    else
     {
         <p>No more profiles to show.</p>
     }
-    @if (UserService.IsLoggedIn) // only show logout if logged in
-    {
-        <button class="btn btn-secondary" @onclick="HandleLogout">Logout</button>
-        // button to log out
-    }
-}
-else // if not logged in
-{
-    <p>Please log in to view the feed.</p>
-    // tell them to log in
-    <button class="btn btn-link" @onclick="NavigateToLogin">Go to Login</button>
-    // button to go to login
-}
 
-@if (showMatchModal) // if the match modal should be shown
-{
-    <div class="modal fade show" tabindex="-1" role="dialog" style="display: block;">
-        // the modal background
-        <div class="modal-dialog" role="document">
-            // the modal itself
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Match!</h5>
-                    <button type="button" class="btn-close" @onclick="CloseMatchModal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <p>@matchNotification</p>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-primary" @onclick="GoToChat">Chat</button>
-                    <button type="button" class="btn btn-secondary" @onclick="CloseMatchModal">Close</button>
+    @if (showMatchModal)
+    {
+        <div class="modal fade show" tabindex="-1" role="dialog" style="display: block;">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Match!</h5>
+                        <button type="button" class="btn-close" @onclick="CloseMatchModal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <p>@matchNotification</p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-primary" @onclick="GoToChat">Chat</button>
+                        <button type="button" class="btn btn-secondary" @onclick="CloseMatchModal">Close</button>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
-    <div class="modal-backdrop fade show"></div>
+        <div class="modal-backdrop fade show"></div>
+    }
 
+    <button class="btn btn-secondary" @onclick="HandleLogout">Logout</button>
+}
+else
+{
+    <p>Please log in to view the feed.</p>
+    <button class="btn btn-link" @onclick="NavigateToLogin">Go to Login</button>
 }
 
 @code {
@@ -108,62 +96,59 @@ else // if not logged in
 
     private async Task SwipeRight()
     {
-        // **This SwipeRight() method is for the general feed, not event-specific.**
-        // We need a separate mechanism for event matching.
-        // I'll leave this as is for now, but it won't trigger event matches.
         if (currentProfile != null && UserService.CurrentUser != null)
         {
             var currentUser = UserService.CurrentUser;
-            // MatchService.AddPotentialMatch(currentUser.UserID, currentProfile.UserID); // General feed match
-            // System.Console.WriteLine($"Potential match with: {currentProfile?.FullName}");
+            MatchService.AddPotentialMatch(currentUser.UserID, currentProfile.UserID, 0);
 
-            // if (MatchService.CheckForMutualMatch(currentUser.UserID, currentProfile.UserID)) // General feed match
-            // {
-            //     matchNotification = $"You matched with {currentProfile.FullName}!";
-            //     showMatchModal = true;
-            // }
+            if (MatchService.CheckForMutualMatch(currentUser.UserID, currentProfile.UserID, 0))
+            {
+                matchNotification = $"You matched with {currentProfile.FullName}!";
+                showMatchModal = true;
+
+                MatchService.AddMutualMatch(currentUser.UserID, currentProfile.UserID, 0);
+            }
             StateHasChanged();
             await Task.Delay(100);
             ShowNextProfile();
         }
     }
 
-    private void SwipeLeft() // when someone swipes left
+    private void SwipeLeft()
     {
-        ShowNextProfile(); // just show the next profile
+        ShowNextProfile();
     }
 
-    private void ShowNextProfile() // get the next profile to show
+    private void ShowNextProfile()
     {
-        if (allUsers != null && currentProfileIndex < allUsers.Count - 1) // if there are more profiles
+        if (allUsers != null && currentProfileIndex < allUsers.Count - 1)
         {
-            currentProfileIndex++; // go to the next index
-            currentProfile = allUsers[currentProfileIndex]; // get the next profile
+            currentProfileIndex++;
+            currentProfile = allUsers[currentProfileIndex];
         }
-        else // if no more profiles
+        else
         {
-            currentProfile = null; // set current profile to null
+            currentProfile = null;
         }
     }
 
-    private void NavigateToLogin() // go to the login page
+    private void NavigateToLogin()
     {
         NavigationManager.NavigateTo("/login");
     }
 
-    private void CloseMatchModal() // close the match modal
+    private void CloseMatchModal()
     {
-        showMatchModal = false; // hide the modal
-        matchNotification = ""; // clear the message
+        showMatchModal = false;
+        matchNotification = "";
     }
 
-    private void GoToChat() // go to the chat page
+    private void GoToChat()
     {
-        // go to the chat page with the current user and the person they matched with
         if (currentProfile != null && UserService.CurrentUser != null)
         {
             NavigationManager.NavigateTo($"/chat/{UserService.CurrentUser.UserID}/{currentProfile.UserID}");
         }
-        CloseMatchModal(); // close the modal after going to chat
+        CloseMatchModal();
     }
 }
