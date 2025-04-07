@@ -1,3 +1,141 @@
+/* _content/DDD work/Pages/Chat.razor.rz.scp.css */
+/* Chat.razor.css */
+
+.chat-container[b-wtsiyu4xhh] {
+    display: flex;
+    flex-direction: column;
+    height: 80vh; /* Adjust as needed */
+    width: 80vw; /* Adjust as needed */
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    overflow: hidden;
+    background-color: #f9f9f9;
+}
+
+.chat-header[b-wtsiyu4xhh] {
+    padding: 15px;
+    border-bottom: 1px solid #ddd;
+    background-color: #e9e9e9;
+    font-weight: bold;
+    font-size: 1.2em;
+}
+
+.chat-messages[b-wtsiyu4xhh] {
+    flex-grow: 1;
+    padding: 15px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+}
+
+.message[b-wtsiyu4xhh] {
+    padding: 10px;
+    border-radius: 8px;
+    margin-bottom: 10px;
+    max-width: 70%;
+}
+
+    .message.sent[b-wtsiyu4xhh] {
+        background-color: #dcf8c6; /* Light green for sent messages */
+        align-self: flex-end;
+    }
+
+    .message.received[b-wtsiyu4xhh] {
+        background-color: #fff; /* White for received messages */
+        align-self: flex-start;
+    }
+
+.chat-input[b-wtsiyu4xhh] {
+    display: flex;
+    padding: 10px;
+    border-top: 1px solid #ddd;
+    background-color: #f0f0f0;
+}
+
+    .chat-input input[type="text"][b-wtsiyu4xhh] {
+        flex-grow: 1;
+        padding: 8px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        margin-right: 10px;
+    }
+
+    .chat-input button[b-wtsiyu4xhh] {
+        padding: 8px 15px;
+        background-color: #007bff;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+    }
+
+        .chat-input button:hover[b-wtsiyu4xhh] {
+            background-color: #0056b3;
+        }
+/* _content/DDD work/Pages/Matches.razor.rz.scp.css */
+
+
+.matches-container[b-6u1gjl2g3u] {
+    background-color: #fff; /* White background */
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+    .matches-container h1[b-6u1gjl2g3u] {
+        color: #333; /* Darker text for heading */
+        margin-bottom: 20px;
+    }
+
+.matches-section[b-6u1gjl2g3u] {
+    margin-bottom: 30px;
+}
+
+    .matches-section h2[b-6u1gjl2g3u] {
+        color: #d8a8b8; /* Light pink for section headings */
+        border-bottom: 2px solid #d8a8b8;
+        padding-bottom: 5px;
+        margin-bottom: 15px;
+    }
+
+.matches-list[b-6u1gjl2g3u] {
+    list-style: none;
+    padding: 0;
+}
+
+    .matches-list li[b-6u1gjl2g3u] {
+        background-color: #fce4ec; /* Light pink background for list items */
+        padding: 15px;
+        border-radius: 6px;
+        margin-bottom: 10px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+        .matches-list li:last-child[b-6u1gjl2g3u] {
+            margin-bottom: 0;
+        }
+
+        .matches-list li .btn[b-6u1gjl2g3u] {
+            background-color: #d8a8b8; /* Light pink for buttons */
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+            .matches-list li .btn:hover[b-6u1gjl2g3u] {
+                background-color: #c28fa0; /* Darker pink on hover */
+            }
+
+.no-matches[b-6u1gjl2g3u] {
+    color: #777;
+    font-style: italic;
+}
 /* _content/DDD work/Shared/MainLayout.razor.rz.scp.css */
 .page[b-bmouew25y3] {
     position: relative;

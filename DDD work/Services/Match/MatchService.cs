@@ -34,5 +34,20 @@ namespace DDD_work.Services.Match
         {
             return _mutualMatches.Where(m => m.User1Id == userId || m.User2Id == userId).ToList();
         }
+
+        public List<DDD_work.Models.Match> ConvertMutualMatchesToMatches(long currentUserId)
+        {
+            var matches = new List<DDD_work.Models.Match>();
+            foreach (var mutualMatch in GetMutualMatches(currentUserId))
+            {
+                matches.Add(new DDD_work.Models.Match
+                {
+                    User1Id = mutualMatch.User1Id,
+                    User2Id = mutualMatch.User2Id,
+                    EventId = mutualMatch.EventId
+                });
+            }
+            return matches;
+        }
     }
 }

@@ -8,6 +8,8 @@ namespace DDD_work.Services.Auth
     {
         private User _currentUser; // the currently logged-in user, private so we control it
 
+       
+
         public User CurrentUser => _currentUser; // a way to get the current user info
 
         public void SetCurrentUser(User user) // when someone logs in, we set the current user

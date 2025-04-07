@@ -1,24 +1,157 @@
-﻿﻿
-@page "/chat/{senderId:long}/{receiverId:long}"
-@using Microsoft.AspNetCore.Components
-@inject NavigationManager NavigationManager
+﻿@page "/chat/{User1Id:long}/{User2Id:long}"
+@using DDD_work.Models
+@using DDD_work.Services
+@using DDD_work.Services.Auth
+@inject ChatService ChatService
+@inject DDD_work.Services.Auth.UserService UserService
+@inject UserDataService UserDataService
 
-<h1>Chat with @ReceiverName</h1>
+<div class="chat-container">
+    <div class="chat-header">
+        <h1>Chat with @(otherUser?.FullName ?? "User")</h1>
+    </div>
+    <div class="chat-messages">
+        @foreach (var message in messages)
+        {
+            <div class="@(message.SenderId == UserService.CurrentUser.UserID ? "sent" : "received") message">
+                <strong>@(message.SenderId == UserService.CurrentUser.UserID ? "You" : otherUser?.FullName):</strong>
+                @message.Content
+                <span class="timestamp">@message.Timestamp.ToString("HH:mm")</span>
+            </div>
+        }
+    </div>
+    <div class="chat-input">
+        <input type="text" @bind="newMessage" placeholder="Type a message..." @onkeyup="HandleKeyUp" />
+        <button @onclick="SendMessage">Send</button>
+    </div>
+</div>
 
-<p>This is where the chat interface would go.</p>
+<style>
+    .chat-container {
+        display: flex;
+        flex-direction: column;
+        height: 80vh;
+        width: 80vw;
+        border: 1px solid #fce4ec;
+        border-radius: 8px;
+        overflow: hidden;
+        background-color: #fff;
+    }
 
+    .chat-header {
+        padding: 15px;
+        border-bottom: 1px solid #fce4ec;
+        background-color: #f9f9f9;
+        font-weight: bold;
+        font-size: 1.5em;
+        color: #d8a8b8; /* Light pink for header */
+    }
+
+    .chat-messages {
+        flex-grow: 1;
+        padding: 15px;
+        overflow-y: auto;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .message {
+        padding: 10px;
+        border-radius: 8px;
+        margin-bottom: 10px;
+        max-width: 70%;
+    }
+
+        .message.sent {
+            background-color: #fce4ec; /* Light pink for sent messages */
+            align-self: flex-end;
+            color: #333;
+        }
+
+        .message.received {
+            background-color: #fff;
+            align-self: flex-start;
+            color: #333;
+        }
+
+    .timestamp {
+        font-size: 0.8em;
+        color: white; /* White timestamp */
+        margin-left: 5px;
+    }
+
+    .chat-input {
+        display: flex;
+        padding: 10px;
+        border-top: 1px solid #fce4ec;
+        background-color: #f9f9f9;
+    }
+
+        .chat-input input[type="text"] {
+            flex-grow: 1;
+            padding: 8px;
+            border: 1px solid #d8a8b8;
+            border-radius: 4px;
+            margin-right: 10px;
+        }
+
+        .chat-input button {
+            padding: 8px 15px;
+            background-color: #fce4ec; /* Light pink send button */
+            color: #333;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+            .chat-input button:hover {
+                background-color: #d8a8b8;
+            }
+</style>
 @code {
     [Parameter]
-    public long SenderId { get; set; }
+    public long User1Id { get; set; }
 
     [Parameter]
-    public long ReceiverId { get; set; }
+    public long User2Id { get; set; }
 
-    private string ReceiverName { get; set; } = "User"; // placeholder
+    private List<Message> messages = new List<Message>();
+    private string newMessage;
+    private User otherUser;
 
-    protected override void OnInitialized()
+    protected override async Task OnInitializedAsync()
     {
-        //name here instead of user id
-        ReceiverName = $"User ID: {ReceiverId}";
+        if (UserService.CurrentUser == null)
+        {
+            // Handle unauthorized access
+            return;
+        }
+
+        if (User1Id != UserService.CurrentUser.UserID && User2Id != UserService.CurrentUser.UserID)
+        {
+            // Handle invalid user IDs
+            return;
+        }
+
+        otherUser = await UserDataService.GetUserByIdAsync(User1Id == UserService.CurrentUser.UserID ? User2Id : User1Id);
+        messages = ChatService.GetMessages(User1Id, User2Id);
+    }
+
+    private void SendMessage()
+    {
+        if (!string.IsNullOrWhiteSpace(newMessage))
+        {
+            ChatService.SendMessage(UserService.CurrentUser.UserID, User2Id, newMessage);
+            messages = ChatService.GetMessages(User1Id, User2Id);
+            newMessage = string.Empty;
+        }
+    }
+
+    private void HandleKeyUp(KeyboardEventArgs args)
+    {
+        if (args.Key == "Enter")
+        {
+            SendMessage();
+        }
     }
 }

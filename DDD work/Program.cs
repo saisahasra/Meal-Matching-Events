@@ -20,6 +20,9 @@ builder.Services.AddScoped<EventService>();
 builder.Services.AddHttpClient(); // lets us make web calls
 builder.Services.AddScoped<MealMatchService>();
 builder.Services.AddScoped<UserService>();
+builder.Services.AddSingleton<MealMatchDataService>();
+builder.Services.AddScoped<ChatService>();
+builder.Services.AddScoped<GroupChatService>();
 
 var app = builder.Build(); // the app is ready
 

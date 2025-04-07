@@ -8,62 +8,122 @@
 @inject NavigationManager NavigationManager
 @inject MatchService MatchService
 @inject EventService EventService
+@inject MealMatchService MealMatchDataService
+@inject GroupChatService GroupChatService
 
-<h1>My Matches</h1>
+<div class="matches-container">
+    <h1>My Matches</h1>
 
-@if (UserService.CurrentUser == null)
-{
-    <p>Please log in to view your matches.</p>
-}
-else
-{
-    @if (feedMatches.Any() || eventMatches.Any())
+    @if (UserService.CurrentUser == null)
     {
-        <h2>Feed Matches</h2>
-        @if (feedMatches.Any())
-        {
-            <ul>
-                @foreach (var user in feedMatches)
-                {
-                    <li>
-                        @user.FullName
-                        <button class="btn btn-primary btn-sm ms-2" @onclick="() => GoToChat(user.UserID)">Chat</button>
-                    </li>
-                }
-            </ul>
-        }
-        else
-        {
-            <p>No feed matches yet.</p>
-        }
-
-        <h2>Event Matches</h2>
-        @if (eventMatches.Any())
-        {
-            <ul>
-                @foreach (var match in eventMatches)
-                {
-                    <li>
-                        @match.User.FullName - @match.Event.Name at @match.Event.DateTime.ToString("f")
-                        <button class="btn btn-primary btn-sm ms-2" @onclick="() => GoToChat(match.User.UserID)">Chat</button>
-                    </li>
-                }
-            </ul>
-        }
-        else
-        {
-            <p>No event matches yet.</p>
-        }
+        <p class="no-matches">Please log in to view your matches.</p>
     }
     else
     {
-        <p>No matches yet.</p>
+        @if (feedMatches.Any() || eventMatches.Any() || MealMatchDataService.MealMatches.Any() || potentialGroupChats.Any())
+        {
+            <div class="matches-section">
+                <h2>Feed Matches</h2>
+                @if (feedMatches.Any())
+                {
+                    <ul class="matches-list">
+                        @foreach (var user in feedMatches)
+                        {
+                            <li>
+                                <span>@user.FullName</span>
+                                <button class="btn btn-primary btn-sm ms-2" @onclick="() => GoToChat(user.UserID)">Chat</button>
+                            </li>
+                        }
+                    </ul>
+                }
+                else
+                {
+                    <p class="no-matches">No feed matches yet.</p>
+                }
+            </div>
+
+            <div class="matches-section">
+                <h2>Event Matches</h2>
+                @if (eventMatches.Any())
+                {
+                    <ul class="matches-list">
+                        @foreach (var match in eventMatches)
+                        {
+                            <li>
+                                <span>@match.User.FullName - @match.Event.Name at @match.Event.DateTime.ToString("f")</span>
+                                <button class="btn btn-primary btn-sm ms-2" @onclick="() => GoToChat(match.User.UserID)">Chat</button>
+                            </li>
+                        }
+                    </ul>
+                }
+                else
+                {
+                    <p class="no-matches">No event matches yet.</p>
+                }
+            </div>
+
+            <div class="matches-section">
+                <h2>Meal Matches</h2>
+                @if (MealMatchDataService.MealMatches.Any())
+                {
+                    <ul class="matches-list">
+                        @foreach (var match in MealMatchDataService.MealMatches)
+                        {
+                            <li>
+                                <span>Match with @match.User.FullName on @match.MealMatch.Name at @match.MealMatch.MealTime.ToString("f")</span>
+                                <button class="btn btn-primary btn-sm ms-2" @onclick="() => GoToChat(match.User.UserID)">Chat</button>
+                            </li>
+                        }
+                    </ul>
+                }
+                else
+                {
+                    <p class="no-matches">No meal matches yet.</p>
+                }
+            </div>
+
+            @if (potentialGroupChats.Any())
+            {
+                <div class="matches-section">
+                    <h2>Group Connection!</h2>
+                    <ul class="matches-list">
+                        @foreach (var group in potentialGroupChats)
+                        {
+                            <li>
+                                <span>Group with: @string.Join(", ", group.Select(userId => GetUserName(userId).Result))</span>
+                                <button class="btn btn-success btn-sm ms-2" @onclick="() => CreateOrJoinGroupChat(group)">Join Group Chat</button>
+                            </li>
+                        }
+                    </ul>
+                </div>
+            }
+        }
+        else
+        {
+            <p class="no-matches">No matches yet.</p>
+        }
     }
-}
+</div>
 
 @code {
     private List<User> feedMatches = new List<User>();
     private List<(User User, Event Event)> eventMatches = new List<(User User, Event Event)>();
+    private List<List<long>> potentialGroupChats = new List<List<long>>();
+
+    protected override void OnInitialized()
+    {
+        MealMatchDataService.OnMealMatchesChanged += MealMatchesChanged;
+    }
+
+    private void MealMatchesChanged()
+    {
+        InvokeAsync(StateHasChanged);
+    }
+
+    public void Dispose()
+    {
+        MealMatchDataService.OnMealMatchesChanged -= MealMatchesChanged;
+    }
 
     protected override async Task OnInitializedAsync()
     {
@@ -76,7 +136,11 @@ else
     private async Task LoadMatches()
     {
         var currentUser = UserService.CurrentUser;
-        var mutualMatches = MatchService.GetMutualMatches(currentUser.UserID);
+        var mutualMatches = MatchService.ConvertMutualMatchesToMatches(currentUser.UserID);
+
+        feedMatches.Clear();
+        eventMatches.Clear();
+        potentialGroupChats.Clear();
 
         foreach (var match in mutualMatches)
         {
@@ -89,7 +153,7 @@ else
                     feedMatches.Add(matchedUser);
                 }
             }
-            else // Event match
+            else if (match.EventId > 0) // Event match
             {
                 long otherUserId = match.User1Id == currentUser.UserID ? match.User2Id : match.User1Id;
                 var matchedUser = await UserDataService.GetUserByIdAsync(otherUserId);
@@ -100,6 +164,51 @@ else
                 }
             }
         }
+
+        // Detect potential group chats
+        var groups = new Dictionary<string, List<long>>();
+
+        foreach (var match in mutualMatches)
+        {
+            long user1Id = match.User1Id;
+            long user2Id = match.User2Id;
+
+            string key = string.Join(",", new[] { user1Id, user2Id }.OrderBy(id => id));
+
+            if (!groups.ContainsKey(key))
+            {
+                groups[key] = new List<long>();
+            }
+
+            if (!groups[key].Contains(currentUser.UserID))
+            {
+                groups[key].Add(currentUser.UserID);
+            }
+
+            if (!groups[key].Contains(user1Id))
+            {
+                groups[key].Add(user1Id);
+            }
+
+            if (!groups[key].Contains(user2Id))
+            {
+                groups[key].Add(user2Id);
+            }
+        }
+
+        foreach (var group in groups.Values)
+        {
+            if (group.Count >= 3)
+            {
+                potentialGroupChats.Add(group);
+            }
+        }
+    }
+
+    private async Task<string> GetUserName(long userId)
+    {
+        var user = await UserDataService.GetUserByIdAsync(userId);
+        return user?.FullName ?? "Unknown User";
     }
 
     private void GoToChat(long otherUserId)
@@ -107,6 +216,24 @@ else
         if (UserService.CurrentUser != null)
         {
             NavigationManager.NavigateTo($"/chat/{UserService.CurrentUser.UserID}/{otherUserId}");
+        }
+    }
+
+    private void CreateOrJoinGroupChat(List<long> userIds)
+    {
+        var existingGroup = GroupChatService.GetGroupChatsForUser(UserService.CurrentUser.UserID)
+            .FirstOrDefault(g => g.UserIds.All(userIds.Contains) && userIds.All(g.UserIds.Contains));
+
+        if (existingGroup != null)
+        {
+            // Join existing group chat
+            NavigationManager.NavigateTo($"/groupchat/{existingGroup.GroupChatId}");
+        }
+        else
+        {
+            // Create new group chat
+            var groupChat = GroupChatService.CreateGroupChat("Group Chat", userIds);
+            NavigationManager.NavigateTo($"/groupchat/{groupChat.GroupChatId}");
         }
     }
 }

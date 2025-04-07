@@ -217,3 +217,5 @@ C:\Users\886103\Source\Repos\Meal-Matching-Events\DDD work\obj\Debug\net7.0\refi
 C:\Users\886103\Source\Repos\Meal-Matching-Events\DDD work\obj\Debug\net7.0\DDD work.pdb
 C:\Users\886103\Source\Repos\Meal-Matching-Events\DDD work\obj\Debug\net7.0\DDD work.genruntimeconfig.cache
 C:\Users\886103\Source\Repos\Meal-Matching-Events\DDD work\obj\Debug\net7.0\ref\DDD work.dll
+C:\Users\886103\Source\Repos\Meal-Matching-Events\DDD work\obj\Debug\net7.0\scopedcss\Pages\Matches.razor.rz.scp.css
+C:\Users\886103\Source\Repos\Meal-Matching-Events\DDD work\obj\Debug\net7.0\scopedcss\Pages\Chat.razor.rz.scp.css

@@ -1,0 +1,77 @@
+﻿// Pages/GroupChat.razor
+@page "/groupchat/{GroupChatId:long}"
+@using DDD_work.Models
+@using DDD_work.Services
+@using DDD_work.Services.Auth
+@inject GroupChatService GroupChatService
+@inject UserService UserService
+@inject UserDataService UserDataService
+
+<h1>Group Chat: @groupChat?.GroupName</h1>
+
+@if (groupChat == null)
+{
+    <p>Group chat not found.</p>
+}
+else
+{
+    <div class="group-chat-container">
+        <div class="group-chat-messages">
+            @foreach (var message in messages)
+            {
+                <div class="@(message.SenderId == UserService.CurrentUser.UserID ? "sent" : "received")">
+                    <strong>@(message.SenderId == UserService.CurrentUser.UserID ? "You" : GetSenderName(message.SenderId))</strong>
+                    @message.Content
+                    <span class="timestamp">@message.Timestamp.ToString("HH:mm")</span>
+                </div>
+            }
+        </div>
+        <div class="group-chat-input">
+            <input type="text" @bind="newMessage" placeholder="Type a message..." />
+            <button @onclick="SendMessage">Send</button>
+        </div>
+    </div>
+}
+
+@code {
+    [Parameter]
+    public long GroupChatId { get; set; }
+
+    private GroupChat groupChat;
+    private List<Message> messages = new List<Message>();
+    private string newMessage;
+
+    protected override async Task OnInitializedAsync()
+    {
+        groupChat = GroupChatService.GetGroupChat(GroupChatId);
+        if (groupChat != null)
+        {
+            // Fetch messages for this group chat (you'll need to implement this)
+            // messages = await ChatService.GetGroupChatMessages(GroupChatId);
+        }
+    }
+
+    private void SendMessage()
+    {
+        if (!string.IsNullOrWhiteSpace(newMessage))
+        {
+            // Send message to group chat (you'll need to implement this)
+            // ChatService.SendGroupChatMessage(GroupChatId, UserService.CurrentUser.UserID, newMessage);
+            // messages = await ChatService.GetGroupChatMessages(GroupChatId);
+            newMessage = string.Empty;
+        }
+    }
+
+    private string GetSenderName(long senderId)
+    {
+        var task = GetSenderNameAsync(senderId);
+        task.Wait();
+        return task.Result;
+    }
+
+    private async Task<string> GetSenderNameAsync(long senderId)
+    {
+        var user = await UserDataService.GetUserByIdAsync(senderId);
+        return user?.FullName ?? "Unknown User";
+    }
+}

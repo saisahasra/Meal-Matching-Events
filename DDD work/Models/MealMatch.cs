@@ -1,7 +1,8 @@
 ﻿
+
 namespace DDD_work.Models
 {
-  
+
     public enum VisibilityOption { Everyone, ConnectionsOnly }
 
     public class MealMatch
@@ -21,5 +22,3 @@ namespace DDD_work.Models
 
 
 }
-
-

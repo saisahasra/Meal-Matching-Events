@@ -1,0 +1,63 @@
+
+
+.matches-container[b-6u1gjl2g3u] {
+    background-color: #fff; /* White background */
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+    .matches-container h1[b-6u1gjl2g3u] {
+        color: #333; /* Darker text for heading */
+        margin-bottom: 20px;
+    }
+
+.matches-section[b-6u1gjl2g3u] {
+    margin-bottom: 30px;
+}
+
+    .matches-section h2[b-6u1gjl2g3u] {
+        color: #d8a8b8; /* Light pink for section headings */
+        border-bottom: 2px solid #d8a8b8;
+        padding-bottom: 5px;
+        margin-bottom: 15px;
+    }
+
+.matches-list[b-6u1gjl2g3u] {
+    list-style: none;
+    padding: 0;
+}
+
+    .matches-list li[b-6u1gjl2g3u] {
+        background-color: #fce4ec; /* Light pink background for list items */
+        padding: 15px;
+        border-radius: 6px;
+        margin-bottom: 10px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+        .matches-list li:last-child[b-6u1gjl2g3u] {
+            margin-bottom: 0;
+        }
+
+        .matches-list li .btn[b-6u1gjl2g3u] {
+            background-color: #d8a8b8; /* Light pink for buttons */
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+            .matches-list li .btn:hover[b-6u1gjl2g3u] {
+                background-color: #c28fa0; /* Darker pink on hover */
+            }
+
+.no-matches[b-6u1gjl2g3u] {
+    color: #777;
+    font-style: italic;
+}
